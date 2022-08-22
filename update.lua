@@ -1,40 +1,26 @@
 function update_game()
-	if btnp(⬅️) then
-		p_x -= 1
-		p_ox = 8
-		_upd = update_p_turn
-	end
-	if btnp(➡️) then
-		p_x += 1
-		p_ox = -8
-		_upd = update_p_turn
-	end
-	if btnp(⬆️) then
-		p_y -= 1
-		p_oy = 8
-		_upd = update_p_turn
-	end
-	if btnp(⬇️) then
-		p_y += 1
-		p_oy = -8
-		_upd = update_p_turn
+	for i = 0, 3 do
+		if btnp(i) then
+			local _dx, _dy = dir_x[i+1], dir_y[i+1]
+			p_x += _dx
+			p_y += _dy
+			p_sx = _dx * -8
+			p_sy = _dy * -8
+			p_ox, p_oy = p_sx, p_sy
+			p_t = 0
+			_upd = update_p_turn
+			return
+		end
 	end
 end
 
 function update_p_turn()
-	if p_ox > 0 then
-		p_ox -= 2
-	end
-	if p_ox < 0 then
-		p_ox += 2
-	end
-	if p_oy > 0 then
-		p_oy -= 2
-	end
-	if p_oy < 0 then
-		p_oy += 2
-	end
-	if p_ox == 0 and p_oy == 0 then
+	p_t = min(p_t + 0.2, 1)
+
+	p_ox = p_sx * (1 - p_t)
+	p_oy = p_sy * (1 - p_t)
+
+	if p_t == 1 then
 		_upd = update_game
 	end
 end
