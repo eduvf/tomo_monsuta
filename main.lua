@@ -21,6 +21,8 @@ function _draw()
 end
 
 function start_game()
+	btn_buff = -1
+
 	p_x, p_y = 4, 3
 	p_ox, p_oy = 0, 0
 	p_sx, p_sy = 0, 0

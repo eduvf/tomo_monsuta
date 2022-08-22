@@ -1,13 +1,15 @@
 function update_game()
-	for i = 0, 3 do
-		if btnp(i) then
-			move_player(dir_x[i+1], dir_y[i+1])
-			return
-		end
+	if btn_buff == -1 then
+		btn_buff = get_btn()
 	end
+	act_btn(btn_buff)
+	btn_buff = -1
 end
 
 function update_p_turn()
+	if btn_buff == -1 then
+		btn_buff = get_btn()
+	end
 	p_t = min(p_t + 0.2, 1)
 
 	p_anim()
@@ -34,4 +36,22 @@ function anim_bump()
 
 	p_ox = p_sx * time
 	p_oy = p_sy * time
+end
+
+function get_btn()
+	for i = 0, 5 do
+		if btnp(i) then
+			return i
+		end
+	end
+	return -1
+end
+
+function act_btn(btn)
+	if btn < 0 then
+		return
+	elseif btn >= 0 and btn < 4 then
+		move_player(dir_x[btn+1], dir_y[btn+1])
+		return
+	end
 end

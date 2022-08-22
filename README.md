@@ -11,3 +11,6 @@ A Rogue-like game for the PICO-8 fantasy console written in Toki Pona, made foll
 -   player name
 -   choose different player characters
 -   "save progress" using a hash-like password
+
+![](tp-characters.png)
+![](exaple.gif)
