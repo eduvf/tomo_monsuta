@@ -4,16 +4,9 @@ __lua__
 -- main code
 
 #include main.lua
-
--->8
--- updates
-
 #include update.lua
-
--->8
--- draws
-
 #include draw.lua
+#include tools.lua
 
 __gfx__
 00000000000000002220222000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009055555550

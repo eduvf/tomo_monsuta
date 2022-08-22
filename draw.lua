@@ -2,8 +2,7 @@ function draw_game()
 	cls(0)
 	map()
 
-	palt(0, false)
-	spr(240, p_x * 8, p_y * 8)
+	sprite(p_anim, p_x * 8 + p_ox, p_y * 8 + p_oy)
 end
 
 function draw_gameover()
