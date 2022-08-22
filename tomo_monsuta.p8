@@ -1,25 +1,20 @@
 pico-8 cartridge // http://www.pico-8.com
 version 36
 __lua__
-function _init()
-	_upd = update_game
-end
+-- main code
 
-function _update()
-	_upd()
-end
+#include main.lua
 
-function _draw()
+-->8
+-- updates
 
-end
+#include update.lua
 
-function update_game()
+-->8
+-- draws
 
-end
+#include draw.lua
 
-function update_gameover()
-
-end
 __gfx__
 00000000000000002220222000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000009055555550
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000909050000000
