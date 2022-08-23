@@ -2,10 +2,8 @@ function _init()
 	t = 0
 	p_walk_anim = {240,241,242,243}
 
-	dir_x = {-1, 1, 0, 0}
-	dir_y = { 0, 0,-1, 1}
-	dir8_x = {-1, 0, 1,-1, 1,-1, 0, 1}
-	dir8_y = {-1,-1,-1, 0, 0, 1, 1, 1}
+	dir_x = {-1, 1, 0, 0, 1, 1,-1,-1}
+	dir_y = { 0, 0,-1, 1,-1, 1, 1,-1}
 
 	_upd = update_game
 	_drw = draw_game
@@ -25,6 +23,9 @@ end
 
 function start_game()
 	btn_buff = -1
+
+	mob = {}
+	add_mob(0, 2, 2)
 
 	p_x, p_y = 4, 3
 	p_ox, p_oy = 0, 0

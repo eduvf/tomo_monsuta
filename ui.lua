@@ -12,8 +12,7 @@ function draw_boxes()
 	for b in all(boxes) do
 		local x, y, w, h = b.x, b.y, b.w, b.h
 		rectf(x, y, w, h, 1)
-		rectf(x + 1, y + 1, w - 2, h - 2, 6)
-		rectf(x + 2, y + 2, w - 4, h - 4, 1)
+		rect(x + 1, y + 1, x + w -1, y + h -2, 6)
 
 		x += 4
 		y += 4

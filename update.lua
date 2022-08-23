@@ -1,5 +1,5 @@
 function update_game()
-	if opened_box != nil then
+	if opened_box then
 		if get_btn() == 5 then
 			opened_box.dur = 0
 			opened_box = nil
@@ -61,6 +61,5 @@ function act_btn(btn)
 		return
 	elseif btn < 4 then
 		move_player(dir_x[btn+1], dir_y[btn+1])
-		return
 	end
 end
