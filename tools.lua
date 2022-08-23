@@ -2,9 +2,9 @@ function get_frame(anim)
 	return anim[flr(t/8) % #anim + 1]
 end
 
-function sprite(id, x, y, flip)
+function sprite(id, x, y, fx)
 	palt(0, false)
-	spr(id, x, y, 1, 1, flip)
+	spr(id, x, y, 1, 1, fx)
 end
 
 function rectf(x, y, w, h, c)

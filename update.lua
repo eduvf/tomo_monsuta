@@ -15,7 +15,7 @@ function update_p_turn()
 	buff_btn()
 	p_t = min(p_t + 0.2, 1)
 
-	p_anim()
+	p_mob.move(p_mob, p_t)
 
 	if p_t == 1 then
 		_upd = update_game
@@ -26,19 +26,19 @@ function update_gameover()
 
 end
 
-function anim_walk()
-	p_ox = p_sx * (1 - p_t)
-	p_oy = p_sy * (1 - p_t)
+function move_walk(mob, anim_t)
+	mob.ox = mob.sx * (1 - anim_t)
+	mob.oy = mob.sy * (1 - anim_t)
 end
 
-function anim_bump()
-	local time = p_t
-	if p_t > 0.5 then
+function move_bump(mob, anim_t)
+	local time = anim_t
+	if anim_t > 0.5 then
 		time = 1 - time
 	end
 
-	p_ox = p_sx * time
-	p_oy = p_sy * time
+	mob.ox = mob.sx * time
+	mob.oy = mob.sy * time
 end
 
 function get_btn()
