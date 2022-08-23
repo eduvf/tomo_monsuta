@@ -4,6 +4,8 @@ function _init()
 
 	dir_x = {-1, 1, 0, 0}
 	dir_y = { 0, 0,-1, 1}
+	dir8_x = {-1, 0, 1,-1, 1,-1, 0, 1}
+	dir8_y = {-1,-1,-1, 0, 0, 1, 1, 1}
 
 	_upd = update_game
 	_drw = draw_game
@@ -33,6 +35,5 @@ function start_game()
 	p_t = 0
 
 	boxes = {}
-
-	add_box(32, 64, 64, 32, {"hello world", "line 2"})
+	opened_box = nil
 end

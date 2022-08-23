@@ -8,5 +8,12 @@ function sprite(id, x, y, flip)
 end
 
 function rectf(x, y, w, h, c)
-	rectfill(x, y, x + w - 1, y + h - 1, c)
+	rectfill(x, y, x + max(w - 1, 0), y + max(h - 1, 0), c)
+end
+
+function oprint8(t, x, y, c1, c2)
+	for i = 1, 8 do
+		print(t, x + dir8_x[i], y + dir8_y[i], c2)
+	end
+	print(t, x, y, c1)
 end

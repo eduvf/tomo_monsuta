@@ -1,7 +1,14 @@
 function update_game()
-	buff_btn()
-	act_btn(btn_buff)
-	btn_buff = -1
+	if opened_box != nil then
+		if get_btn() == 5 then
+			opened_box.dur = 0
+			opened_box = nil
+		end
+	else
+		buff_btn()
+		act_btn(btn_buff)
+		btn_buff = -1
+	end
 end
 
 function update_p_turn()

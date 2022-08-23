@@ -52,5 +52,9 @@ function trig_bump(tile, dest_x, dest_y)
 		-- door
 		sfx(62)
 		mset(dest_x, dest_y, 1)
+	elseif tile == 6 then
+		-- stone tablet
+		-- show_msg('toki! o pona!', 60)
+		show_dlg({'o toki!','','o sewi e tomo','monsuta. o kama','jo e poki pi','kiwen jelo.'})
 	end
 end
