@@ -18,6 +18,7 @@ end
 
 function _draw()
 	_drw()
+	draw_boxes()
 end
 
 function start_game()
@@ -30,4 +31,8 @@ function start_game()
 	p_anim = nil
 
 	p_t = 0
+
+	boxes = {}
+
+	add_box(32, 64, 64, 32, {"hello world", "line 2"})
 end

@@ -1,15 +1,11 @@
 function update_game()
-	if btn_buff == -1 then
-		btn_buff = get_btn()
-	end
+	buff_btn()
 	act_btn(btn_buff)
 	btn_buff = -1
 end
 
 function update_p_turn()
-	if btn_buff == -1 then
-		btn_buff = get_btn()
-	end
+	buff_btn()
 	p_t = min(p_t + 0.2, 1)
 
 	p_anim()
@@ -47,10 +43,16 @@ function get_btn()
 	return -1
 end
 
+function buff_btn()
+	if btn_buff == -1 then
+		btn_buff = get_btn()
+	end
+end
+
 function act_btn(btn)
 	if btn < 0 then
 		return
-	elseif btn >= 0 and btn < 4 then
+	elseif btn < 4 then
 		move_player(dir_x[btn+1], dir_y[btn+1])
 		return
 	end
