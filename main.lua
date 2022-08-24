@@ -10,6 +10,8 @@ function _init()
 
 	_upd = update_game
 	_drw = draw_game
+
+	dbg = {}
 	start_game()
 end
 
@@ -23,6 +25,11 @@ end
 function _draw()
 	_drw()
 	draw_boxes()
+	cursor(4, 4)
+	color(8)
+	for text in all(dbg) do
+		print(text)
+	end
 end
 
 function start_game()
@@ -30,7 +37,15 @@ function start_game()
 
 	mob = {}
 	p_mob = add_mob(1, 1, 1 )
-	add_mob(2, 2, 2)
+
+	for x = 0, 15 do
+		for y = 0, 15 do
+			if mget(x, y) == 192 then
+				add_mob(2, x, y)
+				mset(x, y, 1)
+			end
+		end
+	end
 
 	p_t = 0
 

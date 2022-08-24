@@ -21,3 +21,8 @@ function oprint8(t, x, y, c1, c2)
 	end
 	print(t, x, y, c1)
 end
+
+function dist(x1, y1, x2, y2)
+	local dx, dy = x1 - x2, y1 - y2
+	return sqrt(dx * dx + dy * dy)
+end
