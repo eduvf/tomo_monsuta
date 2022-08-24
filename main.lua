@@ -8,9 +8,6 @@ function _init()
 	mob_atk = {1, 1}
 	mob_hp = {5, 2}
 
-	_upd = update_game
-	_drw = draw_game
-
 	dbg = {}
 	start_game()
 end
@@ -30,19 +27,20 @@ function _draw()
 	for text in all(dbg) do
 		print(text)
 	end
+	color()
 end
 
 function start_game()
 	btn_buff = -1
 
 	mob = {}
+	die_mob = {}
 	p_mob = add_mob(1, 1, 1 )
 
 	for x = 0, 15 do
 		for y = 0, 15 do
-			if mget(x, y) == 192 then
+			if mget(x, y) == 3 then
 				add_mob(2, x, y)
-				mset(x, y, 1)
 			end
 		end
 	end
@@ -52,4 +50,7 @@ function start_game()
 	boxes = {}
 	opened_box = nil
 	float = {}
+
+	_upd = update_game
+	_drw = draw_game
 end

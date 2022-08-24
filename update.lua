@@ -19,7 +19,9 @@ function update_p_turn()
 
 	if p_t == 1 then
 		_upd = update_game
-		follow_ai()
+		if check_end() then
+			follow_ai()
+		end
 	end
 end
 
@@ -35,11 +37,14 @@ function update_ai_turn()
 
 	if p_t == 1 then
 		_upd = update_game
+		check_end()
 	end
 end
 
 function update_gameover()
-
+	if btnp(❎) then
+		start_game()
+	end
 end
 
 function get_btn()

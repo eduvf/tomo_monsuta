@@ -83,6 +83,17 @@ function hit_mob(atk_m, def_m)
 
 	if def_m.hp <= 0 then
 		-- if def_m is player
+		add(die_mob, def_m) -- ???
 		del(mob, def_m)
+		def_m.dur = 8
 	end
+end
+
+function check_end()
+	if p_mob.hp <= 0 then
+		_upd = update_gameover
+		_drw = draw_gameover
+		return false
+	end
+	return true
 end
