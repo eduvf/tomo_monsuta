@@ -3,34 +3,17 @@ function move_player(dx, dy)
 	local dest_y = p_mob.y + dy
 	local tile = mget(dest_x, dest_y)
 
-	if dx < 0 then
-		p_mob.fx = true
-	elseif dx > 0 then
-		p_mob.fx = false
-	end
-
 	if is_walkable(dest_x, dest_y, 'check mobs') then
 		-- move
 		sfx(63)
-
-		p_mob.x += dx
-		p_mob.y += dy
-		p_mob.sx = dx * -8
-		p_mob.sy = dy * -8
-		p_mob.ox, p_mob.oy = p_mob.sx, p_mob.sy
+		mob_walk(p_mob, dx, dy)
 		p_t = 0
 		_upd = update_p_turn
-
-		p_mob.move = move_walk
 	else
 		-- don't move
-		p_mob.sx = dx * 8
-		p_mob.sy = dy * 8
-		p_mob.ox, p_mob.oy = 0, 0
+		mob_bump(p_mob, dx, dy)
 		p_t = 0
 		_upd = update_p_turn
-
-		p_mob.move = move_bump
 
 		local mob = get_mob(dest_x, dest_y)
 		if not mob then
@@ -39,6 +22,7 @@ function move_player(dx, dy)
 				trig_bump(tile, dest_x, dest_y)
 			end
 		else
+			sfx(58)
 			hit_mob(p_mob, mob)
 		end
 	end
@@ -91,4 +75,14 @@ function in_bounds(x, y)
 end
 
 function hit_mob(atk_m, def_m)
+	local dmg = atk_m.atk
+	def_m.hp -= dmg
+	def_m.flash = 4
+
+	add_float('-'..dmg, def_m.x * 8, def_m.y * 8, 9)
+
+	if def_m.hp <= 0 then
+		-- if def_m is player
+		del(mob, def_m)
+	end
 end

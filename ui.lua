@@ -58,3 +58,20 @@ function show_dlg(text)
 	opened_box = add_box(16, 50, 94, #text * 6 + 7, text)
 	opened_box.btn = true
 end
+
+function add_float(text, x, y, c)
+	add(float, {
+		text = text,
+		x = x, y = y, c = c,
+		ty = y - 10, t = 0})
+end
+
+function anim_float()
+	for f in all(float) do
+		f.y += (f.ty - f.y) / 10
+		f.t += 1
+		if f.t > 30 then
+			del(float, f)
+		end
+	end
+end

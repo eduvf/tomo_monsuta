@@ -5,6 +5,8 @@ function _init()
 	dir_y = { 0, 0,-1, 1,-1, 1, 1,-1}
 
 	mob_anim = {240, 192}
+	mob_atk = {1, 1}
+	mob_hp = {5, 2}
 
 	_upd = update_game
 	_drw = draw_game
@@ -15,6 +17,7 @@ function _update()
 	t += 1
 
 	_upd()
+	anim_float()
 end
 
 function _draw()
@@ -33,4 +36,5 @@ function start_game()
 
 	boxes = {}
 	opened_box = nil
+	float = {}
 end

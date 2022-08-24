@@ -26,21 +26,6 @@ function update_gameover()
 
 end
 
-function move_walk(mob, anim_t)
-	mob.ox = mob.sx * (1 - anim_t)
-	mob.oy = mob.sy * (1 - anim_t)
-end
-
-function move_bump(mob, anim_t)
-	local time = anim_t
-	if anim_t > 0.5 then
-		time = 1 - time
-	end
-
-	mob.ox = mob.sx * time
-	mob.oy = mob.sy * time
-end
-
 function get_btn()
 	for i = 0, 5 do
 		if btnp(i) then

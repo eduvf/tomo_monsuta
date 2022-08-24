@@ -2,9 +2,13 @@ function get_frame(anim)
 	return anim[flr(t/8) % #anim + 1]
 end
 
-function sprite(id, x, y, fx)
+function sprite(id, x, y, fx, c)
 	palt(0, false)
+	if c then
+		pal(8, 7)
+	end
 	spr(id, x, y, 1, 1, fx)
+	pal()
 end
 
 function rectf(x, y, w, h, c)
