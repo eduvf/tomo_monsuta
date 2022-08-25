@@ -12,11 +12,11 @@ function draw_boxes()
 	for b in all(boxes) do
 		local x, y, w, h = b.x, b.y, b.w, b.h
 		rectf(x, y, w, h, 1)
-		rect(x + 1, y + 1, x + w -1, y + h -2, 6)
+		rect(x + 1, y + 1, x + w -2, y + h -2, 6)
 
 		x += 4
 		y += 4
-		clip(x, y, w - 8, h - 8)
+		clip(x, y, w - 7, h - 7)
 		for i = 1, #b.text do
 			local t = b.text[i]
 			print(t, x, y, 6)
@@ -74,4 +74,13 @@ function anim_float()
 			del(float, f)
 		end
 	end
+end
+
+function update_hp_box()
+	hp_box.text[1] = p_mob.hp .. '♥'
+	local hp_y = 5
+	if p_mob.y < 8 then
+		hp_y = 110
+	end
+	hp_box.y += (hp_y - hp_box.y) / 5
 end

@@ -91,8 +91,10 @@ end
 
 function check_end()
 	if p_mob.hp <= 0 then
+		boxes = {}
 		_upd = update_gameover
 		_drw = draw_gameover
+		fade_out()
 		return false
 	end
 	return true

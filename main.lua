@@ -1,6 +1,8 @@
 function _init()
 	t = 0
 
+	dpal = {0,1,1,2,1,13,6,4,4,9,3,13,1,13,14}
+
 	dir_x = {-1, 1, 0, 0, 1, 1,-1,-1}
 	dir_y = { 0, 0,-1, 1,-1, 1, 1,-1}
 
@@ -22,6 +24,9 @@ end
 function _draw()
 	_drw()
 	draw_boxes()
+	update_hp_box()
+	check_fade()
+
 	cursor(4, 4)
 	color(8)
 	for text in all(dbg) do
@@ -31,6 +36,7 @@ function _draw()
 end
 
 function start_game()
+	fadeperc = 1 -- fade
 	btn_buff = -1
 
 	mob = {}
@@ -50,6 +56,8 @@ function start_game()
 	boxes = {}
 	opened_box = nil
 	float = {}
+
+	hp_box = add_box(5, 5, 18, 13, {})
 
 	_upd = update_game
 	_drw = draw_game

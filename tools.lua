@@ -26,3 +26,38 @@ function dist(x1, y1, x2, y2)
 	local dx, dy = x1 - x2, y1 - y2
 	return sqrt(dx * dx + dy * dy)
 end
+
+function fade()
+	local pix, kmax, col, k = flr(mid(0, fadeperc, 1) * 100)
+	for j = 1, 15 do
+		col = j
+		kmax = flr((pix + (j * 1.46)) / 22)
+		for k = 1, kmax do
+			col = dpal[col]
+		end
+		pal(j, col, 1)
+	end
+end
+
+function check_fade()
+	if fadeperc > 0 then
+		fadeperc = max(fadeperc - 0.04, 0)
+		fade()
+	end
+end
+
+function wait(_wait)
+	repeat
+		_wait -= 1
+		flip()
+	until _wait < 0
+end
+
+function fade_out()
+	local s = 0.04
+	repeat
+		fadeperc = min(fadeperc + s, 1)
+		fade()
+		flip()
+	until fadeperc == 1
+end

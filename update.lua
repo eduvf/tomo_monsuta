@@ -43,6 +43,7 @@ end
 
 function update_gameover()
 	if btnp(❎) then
+		fade_out()
 		start_game()
 	end
 end
