@@ -2,14 +2,13 @@ function add_mob(type, x, y)
 	local m = {
 		x = x, y = y,
 		ox = 0, oy = 0,
-		sx = 0, sy = 0,
 		fx = false,
-		move = nil,
 		anim = {},
 		flash = 0,
 		hp = mob_hp[type],
 		hp_max = mob_hp[type],
-		atk = mob_atk[type]
+		atk = mob_atk[type],
+		task = ai_wait
 	}
 	for i = 0, 3 do
 		add(m.anim, mob_anim[type] + i)
@@ -65,29 +64,52 @@ function follow_ai()
 	for m in all(mob) do
 		if m != p_mob then
 			m.move = nil
-			if dist(m.x, m.y, p_mob.x, p_mob.y) == 1 then
-				-- attack
-				local dx, dy = p_mob.x - m.x, p_mob.y - m.y
-				mob_bump(m, dx, dy)
-				hit_mob(m, p_mob)
-				sfx(57)
-			else
-				-- follow
-				local best_d, best_x, best_y = 999, 0, 0
-				for i = 1, 4 do
-					local dx, dy = dir_x[i], dir_y[i]
-					local tx, ty = m.x + dx, m.y + dy
-					if is_walkable(tx, ty, 'check mobs') then
-						local d = dist(tx, ty, p_mob.x, p_mob.y)
-						if d < best_d then
-							best_d, best_x, best_y = d, dx, dy
-						end
+			m.task(m)
+
+			dbg[1] = los(m.x, m.y, p_mob.x, p_mob.y)
+		end
+	end
+end
+
+function ai_wait(m)
+	if los(m.x, m.y, p_mob.x, p_mob.y) then
+		m.task = ai_attack
+		m.tx, m.ty = p_mob.x, p_mob.y
+		add_float('!', m.x * 8 + 2, m.y * 8, 10)
+	end
+end
+
+function ai_attack(m)
+	if dist(m.x, m.y, p_mob.x, p_mob.y) == 1 then
+		-- attack
+		local dx, dy = p_mob.x - m.x, p_mob.y - m.y
+		mob_bump(m, dx, dy)
+		hit_mob(m, p_mob)
+		sfx(57)
+	else
+		-- follow
+		if los(m.x, m.y, p_mob.x, p_mob.y) then
+			m.tx, m.ty = p_mob.x, p_mob.y
+		end
+
+		if m.x == m.tx and m.y == m.ty then
+			m.task = ai_wait
+			add_float('?', m.x * 8 + 2, m.y * 8, 10)
+		else
+			local best_d, best_x, best_y = 999, 0, 0
+			for i = 1, 4 do
+				local dx, dy = dir_x[i], dir_y[i]
+				local tx, ty = m.x + dx, m.y + dy
+				if is_walkable(tx, ty, 'check mobs') then
+					local d = dist(tx, ty, m.tx, m.ty)
+					if d < best_d then
+						best_d, best_x, best_y = d, dx, dy
 					end
 				end
-				mob_walk(m, best_x, best_y)
-				_upd = update_ai_turn
-				p_t = 0
 			end
+			mob_walk(m, best_x, best_y)
+			_upd = update_ai_turn
+			p_t = 0
 		end
 	end
 end
