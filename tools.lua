@@ -61,3 +61,16 @@ function fade_out()
 		flip()
 	until fadeperc == 1
 end
+
+function blank_map(default)
+	local ret = {}
+	if default == nil then default = 0 end
+
+	for x = 0, 15 do
+		ret[x] = {}
+		for y = 0, 15 do
+			ret[x][y] = default
+		end
+	end
+	return ret
+end

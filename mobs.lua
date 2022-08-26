@@ -60,14 +60,18 @@ function move_bump(m, anim_t)
 end
 
 function follow_ai()
-	-- dbg = {}
+	local moving = false
+
 	for m in all(mob) do
 		if m != p_mob then
 			m.move = nil
-			m.task(m)
-
-			dbg[1] = los(m.x, m.y, p_mob.x, p_mob.y)
+			moving = m.task(m)
 		end
+	end
+
+	if moving then
+		_upd = update_ai_turn
+		p_t = 0
 	end
 end
 
@@ -76,7 +80,9 @@ function ai_wait(m)
 		m.task = ai_attack
 		m.tx, m.ty = p_mob.x, p_mob.y
 		add_float('!', m.x * 8 + 2, m.y * 8, 10)
+		return true
 	end
+	return false
 end
 
 function ai_attack(m)
@@ -86,6 +92,7 @@ function ai_attack(m)
 		mob_bump(m, dx, dy)
 		hit_mob(m, p_mob)
 		sfx(57)
+		return true
 	else
 		-- follow
 		if los(m.x, m.y, p_mob.x, p_mob.y) then
@@ -108,8 +115,8 @@ function ai_attack(m)
 				end
 			end
 			mob_walk(m, best_x, best_y)
-			_upd = update_ai_turn
-			p_t = 0
+			return true
 		end
 	end
+	return false
 end

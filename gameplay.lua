@@ -26,6 +26,8 @@ function move_player(dx, dy)
 			hit_mob(p_mob, mob)
 		end
 	end
+
+	unfog()
 end
 
 function trig_bump(tile, dest_x, dest_y)
@@ -95,6 +97,8 @@ function check_end()
 		_upd = update_gameover
 		_drw = draw_gameover
 		fade_out()
+		-- reload the map
+		reload(0x2000, 0x2000, 0x1000)
 		return false
 	end
 	return true
@@ -140,4 +144,14 @@ function los(x1, y1, x2, y2)
 		end
 	end
 	return true
+end
+
+function unfog()
+	for x = 0, 15 do
+		for y = 0, 15 do
+			if los(p_mob.x, p_mob.y, x, y) then
+				fog[x][y] = 0
+			end
+		end
+	end
 end

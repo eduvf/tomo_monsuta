@@ -19,12 +19,12 @@ function _update()
 
 	_upd()
 	anim_float()
+	update_hp_box()
 end
 
 function _draw()
 	_drw()
 	draw_boxes()
-	update_hp_box()
 	check_fade()
 
 	cursor(4, 4)
@@ -45,8 +45,9 @@ function start_game()
 
 	for x = 0, 15 do
 		for y = 0, 15 do
-			if mget(x, y) == 3 then
+			if mget(x, y) == 192 then
 				add_mob(2, x, y)
+				mset(x, y, 1)
 			end
 		end
 	end
@@ -57,8 +58,12 @@ function start_game()
 	opened_box = nil
 	float = {}
 
+	fog = blank_map(1)
+
 	hp_box = add_box(5, 5, 18, 13, {})
 
 	_upd = update_game
 	_drw = draw_game
+
+	unfog()
 end
