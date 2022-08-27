@@ -9,6 +9,7 @@ function _init()
 	mob_anim = {240, 192}
 	mob_atk = {1, 1}
 	mob_hp = {5, 2}
+	mob_los = {4, 4}
 
 	dbg = {}
 	start_game()
@@ -58,7 +59,8 @@ function start_game()
 	opened_box = nil
 	float = {}
 
-	fog = blank_map(1)
+	-- set to blank_map(0) to disable fog
+	fog = blank_map(0)
 
 	hp_box = add_box(5, 5, 18, 13, {})
 

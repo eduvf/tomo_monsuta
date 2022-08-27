@@ -62,11 +62,16 @@ end
 function is_walkable(x, y, mode)
 	if mode == nil then mode = '' end
 	if in_bounds(x, y) then
-		if not fget(mget(x, y), 0) then
-			if mode == 'check mobs' then
-				return not get_mob(x, y)
+		local tile = mget(x, y)
+		if mode == 'sight' then
+			return not fget(tile, 2)
+		else
+			if not fget(tile, 0) then
+				if mode == 'check mobs' then
+					return not get_mob(x, y)
+				end
+				return true
 			end
-			return true
 		end
 	end
 	return false
@@ -147,10 +152,23 @@ function los(x1, y1, x2, y2)
 end
 
 function unfog()
+	local px, py = p_mob.x, p_mob.y
 	for x = 0, 15 do
 		for y = 0, 15 do
-			if los(p_mob.x, p_mob.y, x, y) then
-				fog[x][y] = 0
+			if dist(px, py, x, y) <= p_mob.los and los(px, py, x, y) then
+				unfog_tile(x, y)
+			end
+		end
+	end
+end
+
+function unfog_tile(x, y)
+	fog[x][y] = 0
+	if is_walkable(x, y, 'sight') then
+		for i = 1, 4 do
+			local tx, ty = x + dir_x[i], y + dir_y[i]
+			if in_bounds(tx, ty) and not is_walkable(tx, ty, 'sight') then
+				fog[tx][ty] = 0
 			end
 		end
 	end

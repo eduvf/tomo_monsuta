@@ -8,6 +8,7 @@ function add_mob(type, x, y)
 		hp = mob_hp[type],
 		hp_max = mob_hp[type],
 		atk = mob_atk[type],
+		los = mob_los[type],
 		task = ai_wait
 	}
 	for i = 0, 3 do
@@ -65,7 +66,7 @@ function follow_ai()
 	for m in all(mob) do
 		if m != p_mob then
 			m.move = nil
-			moving = m.task(m)
+			moving = m.task(m) or moving
 		end
 	end
 
@@ -76,7 +77,7 @@ function follow_ai()
 end
 
 function ai_wait(m)
-	if los(m.x, m.y, p_mob.x, p_mob.y) then
+	if can_see(m, p_mob) then
 		m.task = ai_attack
 		m.tx, m.ty = p_mob.x, p_mob.y
 		add_float('!', m.x * 8 + 2, m.y * 8, 10)
@@ -95,7 +96,7 @@ function ai_attack(m)
 		return true
 	else
 		-- follow
-		if los(m.x, m.y, p_mob.x, p_mob.y) then
+		if can_see(m, p_mob) then
 			m.tx, m.ty = p_mob.x, p_mob.y
 		end
 
@@ -119,4 +120,8 @@ function ai_attack(m)
 		end
 	end
 	return false
+end
+
+function can_see(m1, m2)
+	return dist(m1.x, m1.y, m2.x, m2.y) <= m1.los and los(m1.x, m1.y, m2.x, m2.y)
 end
