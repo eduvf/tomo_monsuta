@@ -169,3 +169,28 @@ function unfog_tile(x, y)
 		end
 	end
 end
+
+function calc_dist(tx, ty)
+	local cand, step = {}, 0
+	dist_map = blank_map(-1)
+	dist_map[tx][ty] = 0
+	add(cand, {x = tx, y = ty})
+
+	repeat
+		step += 1
+		new_cand = {}
+		for c in all(cand) do
+			for d = 1, 4 do
+				local dx = c.x + dir_x[d]
+				local dy = c.y + dir_y[d]
+				if in_bounds(dx, dy) and dist_map[dx][dy] == -1 then
+					dist_map[dx][dy] = step
+					if is_walkable(dx, dy) then
+						add(new_cand, {x = dx, y = dy})
+					end
+				end
+			end
+		end
+		cand = new_cand
+	until #cand == 0
+end

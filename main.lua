@@ -60,7 +60,7 @@ function start_game()
 	float = {}
 
 	-- set to blank_map(0) to disable fog
-	fog = blank_map(1)
+	fog = blank_map(0)
 
 	hp_box = add_box(5, 5, 18, 13, {})
 

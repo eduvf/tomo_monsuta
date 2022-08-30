@@ -98,11 +98,12 @@ function ai_attack(m)
 			add_float('?', m.x * 8 + 2, m.y * 8, 10)
 		else
 			local best_d, best_x, best_y = 999, 0, 0
+			calc_dist(m.tx, m.ty)
 			for i = 1, 4 do
 				local dx, dy = dir_x[i], dir_y[i]
 				local tx, ty = m.x + dx, m.y + dy
 				if is_walkable(tx, ty, 'check mobs') then
-					local d = dist(tx, ty, m.tx, m.ty)
+					local d = dist_map[tx][ty]
 					if d < best_d then
 						best_d, best_x, best_y = d, dx, dy
 					end
