@@ -10,13 +10,9 @@ function draw_game()
 		end
 	end
 
-	for m in all(mob) do
-		if m != p_mob then
-			draw_mob(m)
-		end
+	for i = #mob, 1, -1 do
+		draw_mob(mob[i])
 	end
-
-	draw_mob(p_mob)
 
 	for x = 0, 15 do
 		for y = 0, 15 do

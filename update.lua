@@ -15,7 +15,7 @@ function update_p_turn()
 	buff_btn()
 	p_t = min(p_t + 0.2, 1)
 
-	p_mob.move(p_mob, p_t)
+	p_mob:move()
 
 	if p_t == 1 then
 		_upd = update_game
@@ -31,7 +31,7 @@ function update_ai_turn()
 
 	for m in all(mob) do
 		if m != p_mob and m.move then
-			m.move(m, p_t)
+			m:move()
 		end
 	end
 

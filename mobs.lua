@@ -38,26 +38,19 @@ function mob_bump(m, dx, dy)
 end
 
 function mob_flip(m, dx)
-	if dx < 0 then
-		m.fx = true
-	elseif dx > 0 then
-		m.fx = false
-	end
+	m.fx = dx == 0 and m.fx or dx < 0
 end
 
-function move_walk(m, anim_t)
-	m.ox = m.sx * (1 - anim_t)
-	m.oy = m.sy * (1 - anim_t)
+function move_walk(self)
+	self.ox = self.sx * (1 - p_t)
+	self.oy = self.sy * (1 - p_t)
 end
 
-function move_bump(m, anim_t)
-	local time = anim_t
-	if anim_t > 0.5 then
-		time = 1 - time
-	end
+function move_bump(self)
+	local time = p_t > 0.5 and 1 - p_t or p_t
 
-	m.ox = m.sx * time
-	m.oy = m.sy * time
+	self.ox = self.sx * time
+	self.oy = self.sy * time
 end
 
 function follow_ai()

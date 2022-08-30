@@ -26,10 +26,10 @@ function draw_boxes()
 
 		
 
-		if b.dur != nil then
+		if b.dur then
 			b.dur -= 1
 			if b.dur <= 0 then
-				b.y += h / 2 / 2
+				b.y += h / 4
 				b.h -= h / 2
 				if b.h < 3 then
 					del(boxes, b)
