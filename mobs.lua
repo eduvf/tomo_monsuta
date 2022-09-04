@@ -97,7 +97,7 @@ function ai_attack(m)
 			m.task = ai_wait
 			add_float('?', m.x * 8 + 2, m.y * 8, 10)
 		else
-			local best_d, best_x, best_y = 999, 0, 0
+			local best_d, cand = 999, {}
 			calc_dist(m.tx, m.ty)
 			for i = 1, 4 do
 				local dx, dy = dir_x[i], dir_y[i]
@@ -105,12 +105,19 @@ function ai_attack(m)
 				if is_walkable(tx, ty, 'check mobs') then
 					local d = dist_map[tx][ty]
 					if d < best_d then
-						best_d, best_x, best_y = d, dx, dy
+						cand = {}
+						best_d = d
+					end
+					if d == best_d then
+						add(cand, {x = dx, y = dy})
 					end
 				end
 			end
-			mob_walk(m, best_x, best_y)
-			return true
+			if #cand > 0 then
+				local c = get_rnd(cand)
+				mob_walk(m, c.x, c.y)
+				return true
+			end
 		end
 	end
 	return false

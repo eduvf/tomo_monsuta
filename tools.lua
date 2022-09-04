@@ -74,3 +74,7 @@ function blank_map(default)
 	end
 	return ret
 end
+
+function get_rnd(arr)
+	return arr[1 + flr(rnd(#arr))]
+end
