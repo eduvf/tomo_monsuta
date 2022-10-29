@@ -126,3 +126,21 @@ end
 function can_see(m1, m2)
 	return dist(m1.x, m1.y, m2.x, m2.y) <= m1.los and los(m1.x, m1.y, m2.x, m2.y)
 end
+
+------------------------------
+
+function take_item(item)
+	local i = free_inv_slot()
+	if i == 0 then return false end
+	inv[i] = item
+	return true
+end
+
+function free_inv_slot()
+	for i = 1, 6 do
+		if not inv[i] then
+			return i
+		end
+	end
+	return 0
+end

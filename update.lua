@@ -11,6 +11,23 @@ function update_game()
 	end
 end
 
+function update_inv()
+	move_menu(inv_box)
+	if btnp(4) then
+		_upd = update_game
+		inv_box.dur = 0
+		stats_box.dur = 0
+	end
+end
+
+function move_menu(box)
+	if btnp(2) then
+		box.cursor_pos = max(1, box.cursor_pos - 1)
+	elseif btnp(3) then
+		box.cursor_pos = min(#box.text, box.cursor_pos + 1)
+	end
+end
+
 function update_p_turn()
 	buff_btn()
 	p_t = min(p_t + 0.2, 1)
@@ -68,5 +85,7 @@ function act_btn(btn)
 		return
 	elseif btn < 4 then
 		move_player(dir_x[btn+1], dir_y[btn+1])
+	elseif btn == 5 then
+		show_inv()
 	end
 end

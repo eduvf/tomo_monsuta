@@ -17,9 +17,18 @@ function draw_boxes()
 		x += 4
 		y += 4
 		clip(x, y, w - 7, h - 7)
+		if b.cursor then
+			x += 6
+		end
 		for i = 1, #b.text do
-			local t = b.text[i]
-			print(t, x, y, 6)
+			local t, c = b.text[i], 6
+			if b.color and b.color[i] then
+				c = b.color[i]
+			end
+			print(t, x, y, c)
+			if i == b.cursor_pos then
+				spr(255, x - 5 + sin(time()), y)
+			end
 			y += 6
 		end
 		clip()
@@ -83,4 +92,43 @@ function update_hp_box()
 		hp_y = 110
 	end
 	hp_box.y += (hp_y - hp_box.y) / 5
+end
+
+function show_inv()
+	local text, color = {}, {}
+	for i = 1, 2 do
+		local item, eqt = eqp[i]
+		if item then
+			eqt = itm_name[item]
+			add(color, 6)
+		else
+			if i == 1 then
+				eqt = '[pakala]'
+			else
+				eqt = '[selo]'
+			end
+			add(color, 5)
+		end
+		add(text, eqt)
+	end
+	add(text, '--------------')
+	add(color, 6)
+	for i = 1, 6 do
+		local item = inv[i]
+		if item then
+			add(text, itm_name[item])
+			add(color, 6)
+		else
+			add(text, '...')
+			add(color, 5)
+		end
+	end
+	
+	_upd = update_inv
+	inv_box = add_box(5, 17, 84, 62, text)
+	inv_box.cursor = true
+	inv_box.cursor_pos = 1
+	inv_box.color = color
+
+	stats_box = add_box(5, 5, 84, 13, {'ambcacmb'})
 end

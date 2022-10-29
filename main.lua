@@ -11,6 +11,8 @@ function _init()
 	mob_hp = {5, 2}
 	mob_los = {4, 4}
 
+	itm_name = {'ilo utala', 'len soweli', 'telo loje'}
+
 	dbg = {}
 	start_game()
 end
@@ -54,6 +56,11 @@ function start_game()
 	end
 
 	p_t = 0
+
+	inv, eqp = {}, {}
+	take_item(1)
+	take_item(2)
+	take_item(3)
 
 	boxes = {}
 	opened_box = nil
