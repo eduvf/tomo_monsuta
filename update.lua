@@ -12,20 +12,32 @@ function update_game()
 end
 
 function update_inv()
-	move_menu(inv_box)
+	move_menu(active_box)
 	if btnp(4) then
-		_upd = update_game
-		inv_box.dur = 0
-		stats_box.dur = 0
+		if active_box == inv_box then
+			_upd = update_game
+			inv_box.dur = 0
+			stats_box.dur = 0
+		elseif active_box == use_box then
+			use_box.dur = 0
+			active_box = inv_box
+		end
+	elseif btnp(5) then
+		if active_box == inv_box and inv_box.cursor != 3 then
+			show_use()
+		elseif active_box == use_box then
+			-- confirm
+		end
 	end
 end
 
 function move_menu(box)
 	if btnp(2) then
-		box.cursor_pos = max(1, box.cursor_pos - 1)
+		box.cursor -= 1
 	elseif btnp(3) then
-		box.cursor_pos = min(#box.text, box.cursor_pos + 1)
+		box.cursor += 1
 	end
+	box.cursor = ((box.cursor - 1) % #box.text) + 1
 end
 
 function update_p_turn()

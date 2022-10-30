@@ -26,14 +26,12 @@ function draw_boxes()
 				c = b.color[i]
 			end
 			print(t, x, y, c)
-			if i == b.cursor_pos then
+			if i == b.cursor then
 				spr(255, x - 5 + sin(time()), y)
 			end
 			y += 6
 		end
 		clip()
-
-		
 
 		if b.dur then
 			b.dur -= 1
@@ -95,18 +93,15 @@ function update_hp_box()
 end
 
 function show_inv()
-	local text, color = {}, {}
+	local text, color, item, eqt = {}, {}
+	_upd = update_inv
 	for i = 1, 2 do
-		local item, eqt = eqp[i]
+		item = eqp[i]
 		if item then
 			eqt = itm_name[item]
 			add(color, 6)
 		else
-			if i == 1 then
-				eqt = '[pakala]'
-			else
-				eqt = '[selo]'
-			end
+			eqt = i == 1 and '[pakala]' or '[selo]'
 			add(color, 5)
 		end
 		add(text, eqt)
@@ -114,7 +109,7 @@ function show_inv()
 	add(text, '--------------')
 	add(color, 6)
 	for i = 1, 6 do
-		local item = inv[i]
+		item = inv[i]
 		if item then
 			add(text, itm_name[item])
 			add(color, 6)
@@ -124,11 +119,34 @@ function show_inv()
 		end
 	end
 	
-	_upd = update_inv
 	inv_box = add_box(5, 17, 84, 62, text)
-	inv_box.cursor = true
-	inv_box.cursor_pos = 1
+	inv_box.cursor = 1
 	inv_box.color = color
 
-	stats_box = add_box(5, 5, 84, 13, {'ambcacmb'})
+	stats_box = add_box(5, 5, 84, 13, {'pkl: 1  len: 1'})
+
+	active_box = inv_box
+end
+
+function show_use()
+	local item = inv_box.cursor < 3 and eqp[inv_box.cursor] or inv[inv_box.cursor - 3]
+	if item == nil then
+		return
+	end
+	local typ, text = itm_type[item], {}
+
+	if typ == 'weapon' or typ == 'armor' then
+		add(text, 'o kpkn')
+	end
+	if typ == 'food' then
+		add(text, 'o moku')
+	end
+	if typ == 'throw' or typ == 'food' then
+		add(text, 'o pana')
+	end
+	add(text, 'o weka')
+
+	use_box = add_box(84, inv_box.cursor * 6 + 11, 36, 7 + #text * 6, text)
+	use_box.cursor = 1
+	active_box = use_box
 end

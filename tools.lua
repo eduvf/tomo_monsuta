@@ -53,13 +53,15 @@ function wait(_wait)
 	until _wait < 0
 end
 
-function fade_out()
-	local s = 0.04
+function fade_out(speed, wait)
+	if speed == nil then speed = 0.04 end
+	if wait == nil then wait = 0 end
 	repeat
-		fadeperc = min(fadeperc + s, 1)
+		fadeperc = min(fadeperc + speed, 1)
 		fade()
 		flip()
 	until fadeperc == 1
+	wait(wait)
 end
 
 function blank_map(default)
