@@ -8,6 +8,8 @@ function add_mob(type, x, y)
 		hp = mob_hp[type],
 		hp_max = mob_hp[type],
 		atk = mob_atk[type],
+		defmin = 0,
+		defmax = 0,
 		los = mob_los[type],
 		task = ai_wait
 	}

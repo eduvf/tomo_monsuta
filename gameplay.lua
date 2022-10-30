@@ -83,6 +83,9 @@ end
 
 function hit_mob(atk_m, def_m)
 	local dmg = atk_m.atk
+	local def = def_m.defmin + flr(rnd(def_m.defmax - def_m.defmin + 1))
+	dmg -= min(def, dmg)
+
 	def_m.hp -= dmg
 	def_m.flash = 4
 
@@ -90,7 +93,7 @@ function hit_mob(atk_m, def_m)
 
 	if def_m.hp <= 0 then
 		-- if def_m is player
-		add(die_mob, def_m) -- ???
+		add(die_mob, def_m)
 		del(mob, def_m)
 		def_m.dur = 8
 	end
@@ -193,4 +196,20 @@ function calc_dist(tx, ty)
 		end
 		cand = new_cand
 	until #cand == 0
+end
+
+function update_stats()
+	local atk, d_min, d_max = 1, 0, 0
+
+	if eqp[1] then
+		atk += itm_stat1[eqp[1]]
+	end
+	if eqp[2] then
+		d_min += itm_stat1[eqp[2]]
+		d_max += itm_stat2[eqp[2]]
+	end
+
+	p_mob.atk = atk
+	p_mob.defmin = d_min
+	p_mob.defmax = d_max
 end

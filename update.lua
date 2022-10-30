@@ -27,6 +27,7 @@ function update_inv()
 			show_use()
 		elseif active_box == use_box then
 			-- confirm
+			trig_use()
 		end
 	end
 end
@@ -77,6 +78,12 @@ function update_gameover()
 	end
 end
 
+function buff_btn()
+	if btn_buff == -1 then
+		btn_buff = get_btn()
+	end
+end
+
 function get_btn()
 	for i = 0, 5 do
 		if btnp(i) then
@@ -84,12 +91,6 @@ function get_btn()
 		end
 	end
 	return -1
-end
-
-function buff_btn()
-	if btn_buff == -1 then
-		btn_buff = get_btn()
-	end
 end
 
 function act_btn(btn)

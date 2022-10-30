@@ -123,7 +123,7 @@ function show_inv()
 	inv_box.cursor = 1
 	inv_box.color = color
 
-	stats_box = add_box(5, 5, 84, 13, {'pkl: 1  len: 1'})
+	stats_box = add_box(5, 5, 84, 13, {'wawa: '..p_mob.atk..' | len: '..p_mob.defmin..'-'..p_mob.defmax})
 
 	active_box = inv_box
 end
@@ -149,4 +149,43 @@ function show_use()
 	use_box = add_box(84, inv_box.cursor * 6 + 11, 36, 7 + #text * 6, text)
 	use_box.cursor = 1
 	active_box = use_box
+end
+
+function trig_use()
+	local verb, i, after = use_box.text[use_box.cursor], inv_box.cursor, 'monsi'
+	local item = i < 3 and eqp[i] or inv[i - 3]
+
+	if verb == 'o weka' then
+		if i < 3 then
+			eqp[i] = nil
+		else
+			inv[i - 3] = nil
+		end
+	elseif verb == 'o kpkn' then
+		local slot = 2
+		if itm_type[item] == 'weapon' then
+			slot = 1
+		end
+		inv[i - 3] = eqp[slot]
+		eqp[slot] = item
+	elseif verb == 'o moku' then
+		-- todo
+	elseif verb == 'o pana' then
+		-- todo
+	end
+
+	update_stats()
+
+	if after == 'monsi' then
+		use_box.dur = 0
+		del(boxes, inv_box)
+		del(boxes, stats_box)
+		show_inv()
+		inv_box.cursor = i
+	elseif after == 'game' then
+		use_box.dur = 0
+		inv_box.dur = 0
+		stats_box.dur = 0
+		_upd = update_game
+	end
 end

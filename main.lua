@@ -11,8 +11,10 @@ function _init()
 	mob_hp = {5, 2}
 	mob_los = {4, 4}
 
-	itm_name = {'ilo utala', 'len soweli', 'telo loje', 'sike kipisi'}
-	itm_type = {'weapon', 'armor', 'food', 'throw'}
+	itm_name = {'ilo utl suli', 'len soweli', 'telo loje', 'sike kipisi', 'ilo utl pkl'}
+	itm_type = {'weapon', 'armor', 'food', 'throw', 'weapon'}
+	itm_stat1 = {2, 0, 0, 0, 1}
+	itm_stat2 = {0, 2, 0, 0, 0}
 
 	dbg = {}
 	start_game()
@@ -63,6 +65,7 @@ function start_game()
 	take_item(2)
 	take_item(3)
 	take_item(4)
+	take_item(5)
 
 	boxes = {}
 	opened_box = nil
