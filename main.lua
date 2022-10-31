@@ -6,6 +6,8 @@ function _init()
 	dir_x = {-1, 1, 0, 0, 1, 1,-1,-1}
 	dir_y = { 0, 0,-1, 1,-1, 1, 1,-1}
 
+	throw_dir, throw_x, throw_y = 2, 0, 0
+
 	mob_anim = {240, 192}
 	mob_atk = {1, 1}
 	mob_hp = {5, 2}
@@ -13,7 +15,7 @@ function _init()
 
 	itm_name = {'ilo utl suli', 'len soweli', 'telo loje', 'sike kipisi', 'ilo utl pkl'}
 	itm_type = {'weapon', 'armor', 'food', 'throw', 'weapon'}
-	itm_stat1 = {2, 0, 0, 0, 1}
+	itm_stat1 = {2, 0, 1, 0, 1}
 	itm_stat2 = {0, 2, 0, 0, 0}
 
 	dbg = {}

@@ -32,6 +32,20 @@ function update_inv()
 	end
 end
 
+function update_throw()
+	local btn = get_btn()
+	if btn >= 0 and btn <= 3 then
+		throw_dir = btn
+	end
+	throw_x = dir_x[throw_dir + 1]
+	throw_y = dir_y[throw_dir + 1]
+	if btn == 4 then
+		_upd = update_game
+	elseif btn == 5 then
+		throw()
+	end
+end
+
 function move_menu(box)
 	if btnp(2) then
 		box.cursor -= 1
@@ -45,7 +59,9 @@ function update_p_turn()
 	buff_btn()
 	p_t = min(p_t + 0.2, 1)
 
-	p_mob:move()
+	if p_mob.move then
+		p_mob:move()
+	end
 
 	if p_t == 1 then
 		_upd = update_game

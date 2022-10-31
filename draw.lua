@@ -14,6 +14,10 @@ function draw_game()
 		draw_mob(mob[i])
 	end
 
+	if _upd == update_throw then
+		line(p_mob.x * 8 + 4, p_mob.y * 8 + 4, p_mob.x * 8 + throw_x * 16 + 4, p_mob.y * 8 + throw_y * 16 + 4, 7)
+	end
+
 	for x = 0, 15 do
 		for y = 0, 15 do
 			if fog[x][y] == 1 then

@@ -99,6 +99,14 @@ function hit_mob(atk_m, def_m)
 	end
 end
 
+function heal_mob(m, hp)
+	hp = min(m.hp_max - m.hp, hp)
+	m.hp += hp
+	m.flash = 10
+
+	add_float('+'..hp, m.x * 8, m.y * 8, 7)
+end
+
 function check_end()
 	if p_mob.hp <= 0 then
 		boxes = {}
@@ -212,4 +220,17 @@ function update_stats()
 	p_mob.atk = atk
 	p_mob.defmin = d_min
 	p_mob.defmax = d_max
+end
+
+function eat(item, m)
+	local effect = itm_stat1[item]
+
+	if effect == 1 then
+		-- heal
+		heal_mob(m, 1)
+	end
+end
+
+function throw()
+	_upd = update_game
 end

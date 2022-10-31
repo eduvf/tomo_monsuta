@@ -169,9 +169,12 @@ function trig_use()
 		inv[i - 3] = eqp[slot]
 		eqp[slot] = item
 	elseif verb == 'o moku' then
-		-- todo
+		eat(item, p_mob)
+		inv[i - 3] = nil
+		p_mob.move = nil
+		after = 'turn'
 	elseif verb == 'o pana' then
-		-- todo
+		after = 'throw'
 	end
 
 	update_stats()
@@ -182,10 +185,21 @@ function trig_use()
 		del(boxes, stats_box)
 		show_inv()
 		inv_box.cursor = i
+	elseif after == 'turn' then
+		use_box.dur = 0
+		inv_box.dur = 0
+		stats_box.dur = 0
+		p_t = 0
+		_upd = update_p_turn
 	elseif after == 'game' then
 		use_box.dur = 0
 		inv_box.dur = 0
 		stats_box.dur = 0
 		_upd = update_game
+	elseif after == 'throw' then
+		use_box.dur = 0
+		inv_box.dur = 0
+		stats_box.dur = 0
+		_upd = update_throw
 	end
 end
