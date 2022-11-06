@@ -1,31 +1,31 @@
 function update_game()
-	if opened_box then
+	if talk_wind then
 		if get_btn() == 5 then
-			opened_box.dur = 0
-			opened_box = nil
+			talk_wind.dur = 0
+			talk_wind = nil
 		end
 	else
-		buff_btn()
-		act_btn(btn_buff)
+		do_btn_buff()
+		do_btn(btn_buff)
 		btn_buff = -1
 	end
 end
 
 function update_inv()
-	move_menu(active_box)
+	move_menu(curr_wind)
 	if btnp(4) then
-		if active_box == inv_box then
+		if curr_wind == inv_wind then
 			_upd = update_game
-			inv_box.dur = 0
-			stats_box.dur = 0
-		elseif active_box == use_box then
-			use_box.dur = 0
-			active_box = inv_box
+			inv_wind.dur = 0
+			stat_wind.dur = 0
+		elseif curr_wind == use_wind then
+			use_wind.dur = 0
+			curr_wind = inv_wind
 		end
 	elseif btnp(5) then
-		if active_box == inv_box and inv_box.cursor != 3 then
+		if curr_wind == inv_wind and inv_wind.cursor != 3 then
 			show_use()
-		elseif active_box == use_box then
+		elseif curr_wind == use_wind then
 			-- confirm
 			trig_use()
 		end
@@ -33,30 +33,29 @@ function update_inv()
 end
 
 function update_throw()
-	local btn = get_btn()
-	if btn >= 0 and btn <= 3 then
-		throw_dir = btn
+	local b = get_btn()
+	if b >= 0 and b <= 3 then
+		throw_x = dir_x[b + 1]
+		throw_y = dir_y[b + 1]
 	end
-	throw_x = dir_x[throw_dir + 1]
-	throw_y = dir_y[throw_dir + 1]
-	if btn == 4 then
+	if b == 4 then
 		_upd = update_game
-	elseif btn == 5 then
+	elseif b == 5 then
 		throw()
 	end
 end
 
-function move_menu(box)
+function move_menu(w)
 	if btnp(2) then
-		box.cursor -= 1
+		w.cursor -= 1
 	elseif btnp(3) then
-		box.cursor += 1
+		w.cursor += 1
 	end
-	box.cursor = ((box.cursor - 1) % #box.text) + 1
+	w.cursor = ((w.cursor - 1) % #w.text) + 1
 end
 
 function update_p_turn()
-	buff_btn()
+	do_btn_buff()
 	p_t = min(p_t + 0.2, 1)
 
 	if p_mob.move then
@@ -66,13 +65,18 @@ function update_p_turn()
 	if p_t == 1 then
 		_upd = update_game
 		if check_end() then
-			follow_ai()
+			if skip_ai then
+				skip_ai = false
+			else
+				do_ai()
+			end
 		end
+		calc_dist(p_mob.x, p_mob.y)
 	end
 end
 
 function update_ai_turn()
-	buff_btn()
+	do_btn_buff()
 	p_t = min(p_t + 0.2, 1)
 
 	for m in all(mob) do
@@ -94,7 +98,7 @@ function update_gameover()
 	end
 end
 
-function buff_btn()
+function do_btn_buff()
 	if btn_buff == -1 then
 		btn_buff = get_btn()
 	end
@@ -109,12 +113,12 @@ function get_btn()
 	return -1
 end
 
-function act_btn(btn)
-	if btn < 0 then
+function do_btn(b)
+	if b < 0 then
 		return
-	elseif btn < 4 then
-		move_player(dir_x[btn+1], dir_y[btn+1])
-	elseif btn == 5 then
+	elseif b < 4 then
+		move_player(dir_x[b+1], dir_y[b+1])
+	elseif b == 5 then
 		show_inv()
 	end
 end

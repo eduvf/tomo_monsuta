@@ -2,7 +2,9 @@ function draw_game()
 	cls(0)
 	map()
 	for m in all(die_mob) do
-		draw_mob(m)
+		if sin(time()*8) > 0 then
+			draw_mob(m)
+		end
 		m.dur -= 1
 		
 		if m.dur <= 0 then
@@ -15,7 +17,25 @@ function draw_game()
 	end
 
 	if _upd == update_throw then
-		line(p_mob.x * 8 + 4, p_mob.y * 8 + 4, p_mob.x * 8 + throw_x * 16 + 4, p_mob.y * 8 + throw_y * 16 + 4, 7)
+		-- line(p_mob.x * 8 + 4, p_mob.y * 8 + 4, p_mob.x * 8 + throw_x * 16 + 4, p_mob.y * 8 + throw_y * 16 + 4, 7)
+		local tx, ty = throw_tile()
+		local lx1, ly1 = p_mob.x * 8 + 3 + throw_x * 4, p_mob.y * 8 + 3 + throw_y * 4
+		local lx2, ly2 = mid(0, tx * 8 + 3, 127), mid(0, ty * 8 + 3, 127)
+		rectfill(lx1 + throw_y, ly1 + throw_x, lx2 - throw_y, ly2 - throw_x, 0)
+		
+		local thorw_anim, m = flr(t/7) % 2 == 0, get_mob(tx, ty)
+		if thorw_anim then
+			fillp(0b1010010110100101)
+		else
+			fillp(0b0101101001011010)
+		end
+		line(lx1, ly1, lx2, ly2, 7)
+		fillp()
+		oprint8('+', lx2 - 1, ly2 - 2, 7, 0)
+		
+		if m and thorw_anim then
+			m.flash=1
+		end 
 	end
 
 	for x = 0, 15 do
@@ -32,12 +52,12 @@ function draw_game()
 end
 
 function draw_mob(m)
-	local c = false
-	if (m.flash > 0) and (t % 2) == 0 then
+	local c = 10
+	if m.flash > 0 then
 		m.flash -= 1
 		c = 7
 	end
-	sprite(get_frame(m.anim), m.x * 8 + m.ox, m.y * 8 + m.oy, m.fx, c)
+	draw_spr(get_frame(m.anim), m.x * 8 + m.ox, m.y * 8 + m.oy, c, m.fx)
 end
 
 function draw_gameover()

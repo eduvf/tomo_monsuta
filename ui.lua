@@ -1,49 +1,48 @@
-function add_box(x, y, w, h, text)
-	local b = {
+function add_wind(x, y, w, h, text)
+	local w = {
 		x = x, y = y,
 		w = w, h = h,
 		text = text
 	}
-	add(boxes, b)
-	return b
+	add(windows, w)
+	return w
 end
 
-function draw_boxes()
-	for b in all(boxes) do
-		local x, y, w, h = b.x, b.y, b.w, b.h
+function draw_windows()
+	for win in all(windows) do
+		local x, y, w, h = win.x, win.y, win.w, win.h
 		rectf(x, y, w, h, 1)
 		rect(x + 1, y + 1, x + w -2, y + h -2, 6)
-
 		x += 4
 		y += 4
 		clip(x, y, w - 7, h - 7)
-		if b.cursor then
+		if win.cursor then
 			x += 6
 		end
-		for i = 1, #b.text do
-			local t, c = b.text[i], 6
-			if b.color and b.color[i] then
-				c = b.color[i]
+		for i = 1, #win.text do
+			local t, c = win.text[i], 6
+			if win.color and win.color[i] then
+				c = win.color[i]
 			end
 			print(t, x, y, c)
-			if i == b.cursor then
+			if i == win.cursor then
 				spr(255, x - 5 + sin(time()), y)
 			end
 			y += 6
 		end
 		clip()
 
-		if b.dur then
-			b.dur -= 1
-			if b.dur <= 0 then
-				b.y += h / 4
-				b.h -= h / 2
-				if b.h < 3 then
-					del(boxes, b)
+		if win.dur then
+			win.dur -= 1
+			if win.dur <= 0 then
+				win.y += h / 4
+				win.h -= h / 2
+				if win.h < 3 then
+					del(windows, win)
 				end
 			end
 		else
-			if b.btn then
+			if win.btn then
 				oprint8(
 					'❎',
 					x + w - 15,
@@ -57,13 +56,13 @@ end
 
 function show_msg(text, dur)
 	local w = (#text + 2) * 4 + 6
-	local b = add_box(63 - w / 2, 50, w, 13, {' '..text})
-	b.dur = dur
+	local win = add_wind(63 - w / 2, 50, w, 13, {' '..text})
+	win.dur = dur
 end
 
-function show_dlg(text)
-	opened_box = add_box(16, 50, 94, #text * 6 + 7, text)
-	opened_box.btn = true
+function show_talk(text)
+	talk_wind = add_wind(16, 50, 94, #text * 6 + 7, text)
+	talk_wind.btn = true
 end
 
 function add_float(text, x, y, c)
@@ -73,7 +72,7 @@ function add_float(text, x, y, c)
 		ty = y - 10, t = 0})
 end
 
-function anim_float()
+function do_floats()
 	for f in all(float) do
 		f.y += (f.ty - f.y) / 10
 		f.t += 1
@@ -83,13 +82,13 @@ function anim_float()
 	end
 end
 
-function update_hp_box()
-	hp_box.text[1] = p_mob.hp .. '♥'
+function do_hp_wind()
+	hp_wind.text[1] = p_mob.hp .. '♥'
 	local hp_y = 5
 	if p_mob.y < 8 then
 		hp_y = 110
 	end
-	hp_box.y += (hp_y - hp_box.y) / 5
+	hp_wind.y += (hp_y - hp_wind.y) / 5
 end
 
 function show_inv()
@@ -119,17 +118,17 @@ function show_inv()
 		end
 	end
 	
-	inv_box = add_box(5, 17, 84, 62, text)
-	inv_box.cursor = 1
-	inv_box.color = color
+	inv_wind = add_wind(5, 17, 84, 62, text)
+	inv_wind.cursor = 1
+	inv_wind.color = color
 
-	stats_box = add_box(5, 5, 84, 13, {'wawa: '..p_mob.atk..' | len: '..p_mob.defmin..'-'..p_mob.defmax})
+	stat_wind = add_wind(5, 5, 84, 13, {'wawa: '..p_mob.atk..' | len: '..p_mob.def_min..'-'..p_mob.def_max})
 
-	active_box = inv_box
+	curr_wind = inv_wind
 end
 
 function show_use()
-	local item = inv_box.cursor < 3 and eqp[inv_box.cursor] or inv[inv_box.cursor - 3]
+	local item = inv_wind.cursor < 3 and eqp[inv_wind.cursor] or inv[inv_wind.cursor - 3]
 	if item == nil then
 		return
 	end
@@ -146,13 +145,13 @@ function show_use()
 	end
 	add(text, 'o weka')
 
-	use_box = add_box(84, inv_box.cursor * 6 + 11, 36, 7 + #text * 6, text)
-	use_box.cursor = 1
-	active_box = use_box
+	use_wind = add_wind(84, inv_wind.cursor * 6 + 11, 36, 7 + #text * 6, text)
+	use_wind.cursor = 1
+	curr_wind = use_wind
 end
 
 function trig_use()
-	local verb, i, after = use_box.text[use_box.cursor], inv_box.cursor, 'monsi'
+	local verb, i, back = use_wind.text[use_wind.cursor], inv_wind.cursor, true
 	local item = i < 3 and eqp[i] or inv[i - 3]
 
 	if verb == 'o weka' then
@@ -170,36 +169,27 @@ function trig_use()
 		eqp[slot] = item
 	elseif verb == 'o moku' then
 		eat(item, p_mob)
+		_upd = update_p_turn
 		inv[i - 3] = nil
 		p_mob.move = nil
-		after = 'turn'
+		p_t = 0
+		back = false
 	elseif verb == 'o pana' then
-		after = 'throw'
+		_upd = update_throw
+		throw_slt = i - 3
+		back = false
 	end
 
 	update_stats()
+	use_wind.dur = 0
 
-	if after == 'monsi' then
-		use_box.dur = 0
-		del(boxes, inv_box)
-		del(boxes, stats_box)
+	if back then
+		del(windows, inv_wind)
+		del(windows, stat_wind)
 		show_inv()
-		inv_box.cursor = i
-	elseif after == 'turn' then
-		use_box.dur = 0
-		inv_box.dur = 0
-		stats_box.dur = 0
-		p_t = 0
-		_upd = update_p_turn
-	elseif after == 'game' then
-		use_box.dur = 0
-		inv_box.dur = 0
-		stats_box.dur = 0
-		_upd = update_game
-	elseif after == 'throw' then
-		use_box.dur = 0
-		inv_box.dur = 0
-		stats_box.dur = 0
-		_upd = update_throw
+		inv_wind.cursor = i
+	else
+		inv_wind.dur = 0
+		stat_wind.dur = 0
 	end
 end

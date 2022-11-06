@@ -3,7 +3,7 @@ function move_player(dx, dy)
 	local dest_y = p_mob.y + dy
 	local tile = mget(dest_x, dest_y)
 
-	if is_walkable(dest_x, dest_y, 'check mobs') then
+	if is_walkable(dest_x, dest_y, 'checkmobs') then
 		-- move
 		sfx(63)
 		mob_walk(p_mob, dx, dy)
@@ -16,14 +16,16 @@ function move_player(dx, dy)
 		_upd = update_p_turn
 
 		local mob = get_mob(dest_x, dest_y)
-		if not mob then
+		if mob then
+			sfx(58)
+			hit_mob(p_mob, mob)
+		else
 			-- trigger interaction
 			if fget(tile, 1) then
 				trig_bump(tile, dest_x, dest_y)
+			else
+				skip_ai = true
 			end
-		else
-			sfx(58)
-			hit_mob(p_mob, mob)
 		end
 	end
 
@@ -35,10 +37,18 @@ function trig_bump(tile, dest_x, dest_y)
 		-- vase
 		sfx(59)
 		mset(dest_x, dest_y, 1)
+		if rnd(4) < 1 then
+			local item = flr(rnd(#itm_name)) + 1
+			take_item(item)
+			show_msg(itm_name[item], 60)
+		end
 	elseif tile == 10 or tile == 12 then
 		-- chest
 		sfx(61)
 		mset(dest_x, dest_y, tile - 1)
+		local item = flr(rnd(#itm_name)) + 1
+		take_item(item)
+		show_msg(itm_name[item], 60)
 	elseif tile == 13 then
 		-- door
 		sfx(62)
@@ -46,7 +56,7 @@ function trig_bump(tile, dest_x, dest_y)
 	elseif tile == 6 then
 		-- stone tablet
 		-- show_msg('toki! o pona!', 60)
-		show_dlg({'o toki!','','o sewi e tomo','monsuta. o kama','jo e poki pi','kiwen jelo.'})
+		show_talk({'o toki!','','o sewi e tomo','monsuta. o kama','jo e poki pi','kiwen jelo.'})
 	end
 end
 
@@ -67,7 +77,7 @@ function is_walkable(x, y, mode)
 			return not fget(tile, 2)
 		else
 			if not fget(tile, 0) then
-				if mode == 'check mobs' then
+				if mode == 'checkmobs' then
 					return not get_mob(x, y)
 				end
 				return true
@@ -81,13 +91,13 @@ function in_bounds(x, y)
 	return 0 <= x and x <= 15 and 0 <= y and y <= 15
 end
 
-function hit_mob(atk_m, def_m)
-	local dmg = atk_m.atk
-	local def = def_m.defmin + flr(rnd(def_m.defmax - def_m.defmin + 1))
+function hit_mob(atk_m, def_m, raw_dmg)
+	local dmg = atk_m and atk_m.atk or raw_dmg
+	local def = def_m.def_min + flr(rnd(def_m.def_max - def_m.def_min + 1))
 	dmg -= min(def, dmg)
 
 	def_m.hp -= dmg
-	def_m.flash = 4
+	def_m.flash = 10
 
 	add_float('-'..dmg, def_m.x * 8, def_m.y * 8, 9)
 
@@ -95,7 +105,7 @@ function hit_mob(atk_m, def_m)
 		-- if def_m is player
 		add(die_mob, def_m)
 		del(mob, def_m)
-		def_m.dur = 8
+		def_m.dur = 10
 	end
 end
 
@@ -109,7 +119,7 @@ end
 
 function check_end()
 	if p_mob.hp <= 0 then
-		boxes = {}
+		windows = {}
 		_upd = update_gameover
 		_drw = draw_gameover
 		fade_out()
@@ -184,8 +194,8 @@ end
 function calc_dist(tx, ty)
 	local cand, step = {}, 0
 	dist_map = blank_map(-1)
-	dist_map[tx][ty] = 0
 	add(cand, {x = tx, y = ty})
+	dist_map[tx][ty] = 0
 
 	repeat
 		step += 1
@@ -218,8 +228,8 @@ function update_stats()
 	end
 
 	p_mob.atk = atk
-	p_mob.defmin = d_min
-	p_mob.defmax = d_max
+	p_mob.def_min = d_min
+	p_mob.def_max = d_max
 end
 
 function eat(item, m)
@@ -232,5 +242,31 @@ function eat(item, m)
 end
 
 function throw()
-	_upd = update_game
+	local item, tx, ty = inv[throw_slt], throw_tile()
+
+	if in_bounds(tx, ty) then
+		local m = get_mob(tx, ty)
+		if m then 
+			if itm_type[item] == 'food' then
+				eat(item, m)
+			else
+				hit_mob(nil, m, itm_stat1[item])
+				sfx(58)
+			end
+		end
+	end
+	mob_bump(p_mob, throw_x, throw_y)
+
+	inv[throw_slt] = nil
+	p_t = 0
+	_upd = update_p_turn
+end
+
+function throw_tile()
+	local tx, ty = p_mob.x, p_mob.y
+	repeat
+		tx += throw_x
+		ty += throw_y
+	until not is_walkable(tx, ty, 'checkmobs')
+	return tx, ty
 end

@@ -6,16 +6,16 @@ function _init()
 	dir_x = {-1, 1, 0, 0, 1, 1,-1,-1}
 	dir_y = { 0, 0,-1, 1,-1, 1, 1,-1}
 
-	throw_dir, throw_x, throw_y = 2, 0, 0
+	throw_x, throw_y = 0, -1
 
 	mob_anim = {240, 192}
 	mob_atk = {1, 1}
-	mob_hp = {5, 2}
+	mob_hp = {5, 1}
 	mob_los = {4, 4}
 
 	itm_name = {'ilo utl suli', 'len soweli', 'telo loje', 'sike kipisi', 'ilo utl pkl'}
 	itm_type = {'weapon', 'armor', 'food', 'throw', 'weapon'}
-	itm_stat1 = {2, 0, 1, 0, 1}
+	itm_stat1 = {2, 0, 1, 1, 1}
 	itm_stat2 = {0, 2, 0, 0, 0}
 
 	dbg = {}
@@ -26,13 +26,13 @@ function _update()
 	t += 1
 
 	_upd()
-	anim_float()
-	update_hp_box()
+	do_floats()
+	do_hp_wind()
 end
 
 function _draw()
 	_drw()
-	draw_boxes()
+	draw_windows()
 	check_fade()
 
 	cursor(4, 4)
@@ -40,16 +40,17 @@ function _draw()
 	for text in all(dbg) do
 		print(text)
 	end
-	color()
 end
 
 function start_game()
 	fadeperc = 1 -- fade
 	btn_buff = -1
 
+	skip_ai = false
+
 	mob = {}
 	die_mob = {}
-	p_mob = add_mob(1, 1, 1 )
+	p_mob = add_mob(1, 1, 1)
 
 	for x = 0, 15 do
 		for y = 0, 15 do
@@ -63,23 +64,20 @@ function start_game()
 	p_t = 0
 
 	inv, eqp = {}, {}
-	take_item(1)
-	take_item(2)
-	take_item(3)
-	take_item(4)
-	take_item(5)
+	-- take_item(1)
+	-- take_item(2)
+	-- take_item(3)
+	-- take_item(4)
+	-- take_item(5)
 
-	boxes = {}
-	opened_box = nil
+	windows = {}
 	float = {}
+	fog = blank_map(1)
+	talk_wind = nil
 
-	-- set to blank_map(0) to disable fog
-	fog = blank_map(0)
-
-	hp_box = add_box(5, 5, 18, 13, {})
+	hp_wind = add_wind(5, 5, 28, 13, {})
 
 	_upd = update_game
 	_drw = draw_game
-
 	unfog()
 end

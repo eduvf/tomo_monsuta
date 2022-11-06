@@ -2,11 +2,9 @@ function get_frame(anim)
 	return anim[flr(t/8) % #anim + 1]
 end
 
-function sprite(id, x, y, fx, c)
+function draw_spr(id, x, y, c, fx)
 	palt(0, false)
-	if c then
-		pal(8, 7)
-	end
+	pal(6, c)
 	spr(id, x, y, 1, 1, fx)
 	pal()
 end
@@ -53,15 +51,15 @@ function wait(_wait)
 	until _wait < 0
 end
 
-function fade_out(speed, wait)
+function fade_out(speed, _wait)
 	if speed == nil then speed = 0.04 end
-	if wait == nil then wait = 0 end
+	if _wait == nil then _wait = 0 end
 	repeat
 		fadeperc = min(fadeperc + speed, 1)
 		fade()
 		flip()
 	until fadeperc == 1
-	wait(wait)
+	wait(_wait)
 end
 
 function blank_map(default)

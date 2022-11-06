@@ -1,20 +1,20 @@
-function add_mob(type, x, y)
+function add_mob(typ, x, y)
 	local m = {
 		x = x, y = y,
 		ox = 0, oy = 0,
 		fx = false,
 		anim = {},
 		flash = 0,
-		hp = mob_hp[type],
-		hp_max = mob_hp[type],
-		atk = mob_atk[type],
-		defmin = 0,
-		defmax = 0,
-		los = mob_los[type],
+		hp = mob_hp[typ],
+		hp_max = mob_hp[typ],
+		atk = mob_atk[typ],
+		def_min = 0,
+		def_max = 0,
+		los = mob_los[typ],
 		task = ai_wait
 	}
 	for i = 0, 3 do
-		add(m.anim, mob_anim[type] + i)
+		add(m.anim, mob_anim[typ] + i)
 	end
 	add(mob, m)
 	return m
@@ -50,12 +50,11 @@ end
 
 function move_bump(self)
 	local time = p_t > 0.5 and 1 - p_t or p_t
-
 	self.ox = self.sx * time
 	self.oy = self.sy * time
 end
 
-function follow_ai()
+function do_ai()
 	local moving = false
 
 	for m in all(mob) do
