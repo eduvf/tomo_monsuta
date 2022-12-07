@@ -120,5 +120,7 @@ function do_btn(b)
 		move_player(dir_x[b+1], dir_y[b+1])
 	elseif b == 5 then
 		show_inv()
+	elseif b == 4 then
+		map_gen()
 	end
 end

@@ -52,27 +52,13 @@ function start_game()
 	die_mob = {}
 	p_mob = add_mob(1, 1, 1)
 
-	for x = 0, 15 do
-		for y = 0, 15 do
-			if mget(x, y) == 192 then
-				add_mob(2, x, y)
-				mset(x, y, 1)
-			end
-		end
-	end
-
 	p_t = 0
 
 	inv, eqp = {}, {}
-	-- take_item(1)
-	-- take_item(2)
-	-- take_item(3)
-	-- take_item(4)
-	-- take_item(5)
 
 	windows = {}
 	float = {}
-	fog = blank_map(1)
+	fog = blank_map(0)
 	talk_wind = nil
 
 	hp_wind = add_wind(5, 5, 28, 13, {})
@@ -80,4 +66,6 @@ function start_game()
 	_upd = update_game
 	_drw = draw_game
 	unfog()
+
+	map_gen()
 end
