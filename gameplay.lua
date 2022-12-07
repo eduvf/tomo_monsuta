@@ -25,6 +25,8 @@ function move_player(dx, dy)
 				trig_bump(tile, dest_x, dest_y)
 			else
 				skip_ai = true
+				mset(dest_x, dest_y, 1)
+				maze_worm()
 			end
 		end
 	end

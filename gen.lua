@@ -5,6 +5,7 @@ function map_gen()
         end
     end
     gen_rooms()
+    maze_worm()
 end
 
 function gen_rooms()
@@ -73,6 +74,37 @@ function does_room_fit(r,x,y)
         end
     end
     return true
+end
+
+function maze_worm()
+    for x = 0, 15 do
+        for y = 0, 15 do
+            if not is_walkable(x, y) then
+                if can_carve(x, y) then
+                    mset(x, y, 3)
+                else
+                    mset(x, y, 2)
+                end
+            end
+        end
+    end
+end
+
+function can_carve(x, y)
+    if in_bounds(x, y) then
+        local sig = get_signature(x, y)
+        for i = 1, #carve_sig do
+            if bit_comp(sig, carve_sig[i], carve_msk[i]) then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+function bit_comp(sig, match, mask)
+    local mask = mask and mask or 0
+    return bor(sig, mask) == bor(match, mask)
 end
 
 function get_signature(x, y)

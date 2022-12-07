@@ -6,8 +6,6 @@ function _init()
 	dir_x = {-1, 1, 0, 0, 1, 1,-1,-1}
 	dir_y = { 0, 0,-1, 1,-1, 1, 1,-1}
 
-	throw_x, throw_y = 0, -1
-
 	mob_anim = {240, 192}
 	mob_atk = {1, 1}
 	mob_hp = {5, 1}
@@ -17,6 +15,9 @@ function _init()
 	itm_type = {'weapon', 'armor', 'food', 'throw', 'weapon'}
 	itm_stat1 = {2, 0, 1, 1, 1}
 	itm_stat2 = {0, 2, 0, 0, 0}
+
+	carve_sig = {0b11111111, 0b11010110, 0b01111100, 0b10110011, 0b11101001}
+	carve_msk = {0,          0b00001001, 0b00000011, 0b00001100, 0b00000110}
 
 	dbg = {}
 	start_game()
@@ -62,6 +63,8 @@ function start_game()
 	talk_wind = nil
 
 	hp_wind = add_wind(5, 5, 28, 13, {})
+
+	throw_x, throw_y = 0, -1
 
 	_upd = update_game
 	_drw = draw_game
