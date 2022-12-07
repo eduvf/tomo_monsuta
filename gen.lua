@@ -26,8 +26,8 @@ function gen_rooms()
         end
     until faliure_max <= 0 or room_max <= 0
     
-    dbg[1] = "fails: "..faliure_max
-    dbg[2] = "rooms: "..room_max
+    -- dbg[1] = "fails: "..faliure_max
+    -- dbg[2] = "rooms: "..room_max
 end
 
 function rnd_room(mw, mh)
@@ -73,4 +73,18 @@ function does_room_fit(r,x,y)
         end
     end
     return true
+end
+
+function get_signature(x, y)
+    local sig, digit = 0
+    for i = 1, 8 do
+        local dx, dy = x + dir_x[i], y + dir_y[i]
+        if is_walkable(dx, dy) then
+            digit = 0
+        else
+            digit = 1
+        end
+        sig = bor(sig, shl(digit, 8 - i))
+    end
+    return sig
 end
