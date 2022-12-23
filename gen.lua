@@ -9,7 +9,7 @@ function map_gen()
 end
 
 function gen_rooms()
-    local faliure_max, room_max = 5, 5
+    local faliure_max, room_max = 5, 4
     local mw, mh = 6, 6
 
     repeat
@@ -77,21 +77,50 @@ function does_room_fit(r,x,y)
 end
 
 function maze_worm()
-    for x = 0, 15 do
-        for y = 0, 15 do
-            if not is_walkable(x, y) then
-                if can_carve(x, y) then
-                    mset(x, y, 3)
-                else
-                    mset(x, y, 2)
+    repeat
+        local cand = {}
+        for _x = 0, 15 do
+            for _y = 0, 15 do
+                if not is_walkable(_x, _y) and get_signature(_x, _y) == 255 then
+                    add(cand, {x = _x, y = _y})
                 end
             end
         end
-    end
+
+        if #cand > 0 then
+            local c = get_rnd(cand)
+            dig_worm(c.x, c.y)
+        end
+    until #cand <= 1
+end
+
+function dig_worm(x, y)
+    local dir, step = 1 + flr(rnd(4)), 0
+
+    repeat
+        mset(x, y, 1)
+        if not can_carve(x + dir_x[dir], y + dir_y[dir]) or (rnd() < 0.5 and step > 2) then
+            step = 0
+            local cand = {}
+            for i = 1, 4 do
+                if can_carve(x + dir_x[i], y + dir_y[i]) then
+                    add(cand, i)
+                end
+            end
+            if #cand == 0 then
+                dir = 8
+            else
+                dir = get_rnd(cand)
+            end
+        end
+        x += dir_x[dir]
+        y += dir_y[dir]
+        step += 1
+    until dir == 8
 end
 
 function can_carve(x, y)
-    if in_bounds(x, y) then
+    if in_bounds(x, y) and not is_walkable(x, y) then
         local sig = get_signature(x, y)
         for i = 1, #carve_sig do
             if bit_comp(sig, carve_sig[i], carve_msk[i]) then
