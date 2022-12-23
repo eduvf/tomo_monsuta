@@ -6,6 +6,8 @@ function map_gen()
     end
     gen_rooms()
     maze_worm()
+    place_flags()
+    carve_doors()
 end
 
 function gen_rooms()
@@ -148,4 +150,71 @@ function get_signature(x, y)
         sig = bor(sig, shl(digit, 8 - i))
     end
     return sig
+end
+
+-- doorways
+
+function place_flags()
+    local curr_flag = 1
+    flags = blank_map(0)
+
+    for _x = 0, 15 do
+        for _y = 0, 15 do
+            if is_walkable(_x, _y) and flags[_x][_y] == 0 then
+                grow_flag(_x, _y, curr_flag)
+                curr_flag += 1
+            end
+        end
+    end
+end
+
+function grow_flag(_x, _y, f)
+    local cand, cand_new = {{x = _x, y = _y}}
+
+    repeat
+        cand_new = {}
+        for c in all(cand) do
+            flags[c.x][c.y] = f
+            for d = 1, 4 do
+                local dx, dy = c.x + dir_x[d], c.y + dir_y[d]
+                if is_walkable(dx, dy) and flags[dx][dy] != f then
+                    add(cand_new, {x = dx, y = dy})
+                end
+            end
+        end
+        cand = cand_new
+    until #cand == 0
+end
+
+function carve_doors()
+    local x1, y1, x2, y2, found, _f1, _f2 = 1, 1, 1, 1
+    repeat
+        local doors = {}
+        for _x = 0, 15 do
+            for _y = 0, 15 do
+                if not is_walkable(_x, _y) then
+                    local sig = get_signature(_x, _y)
+                    found = false
+
+                    if bit_comp(sig, 0b11000000, 0b00001111) then
+                        x1, y1, x2, y2, found = _x, _y - 1, _x, _y + 1, true
+                    elseif bit_comp(sig, 0b00110000, 0b00001111) then
+                        x1, y1, x2, y2, found = _x + 1, _y, _x - 1, _y, true
+                    end
+
+                    _f1 = flags[x1][y1]
+                    _f2 = flags[x2][y2]
+                    if found and _f1 != _f2 then
+                        add(doors, {x = _x, y = _y, f1 = _f1, f2 = _f2})
+                    end
+                end
+            end
+        end
+
+        if #doors > 0 then
+            local d = get_rnd(doors)
+            mset(d.x, d.y, 1)
+            grow_flag(d.x, d.y, d.f1)
+        end
+    until #doors == 0
 end

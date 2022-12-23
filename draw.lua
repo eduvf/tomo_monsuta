@@ -46,6 +46,14 @@ function draw_game()
 		end
 	end
 
+	for x = 0, 15 do
+		for y = 0, 15 do
+			if flags[x][y] != 0 then
+				pset(x * 8 + 3, y * 8 + 5, flags[x][y])
+			end
+		end
+	end
+
 	for f in all(float) do
 		oprint8(f.text, f.x, f.y, f.c, 0)
 	end
