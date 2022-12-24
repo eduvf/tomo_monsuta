@@ -4,12 +4,19 @@ function map_gen()
             mset(x, y, 2)
         end
     end
+
+    rooms = {}
+    room_map = blank_map(0)
+    doors = {}
+
     gen_rooms()
     maze_worm()
     place_flags()
     carve_doors()
     carve_cuts()
     fill_ends()
+    start_end()
+    install_doors()
 end
 
 function gen_rooms()
@@ -60,10 +67,12 @@ function place_room(r)
     c = get_rnd(cand)
     r.x = c.x
     r.y = c.y
+    add(rooms, r)
 
     for _x = 0, r.w - 1 do
         for _y = 0, r.h - 1 do
             mset(_x+r.x,_y+r.y,1)
+            room_map[_x + r.x][_y + r.y] = #rooms
         end
     end
     return true
@@ -216,6 +225,7 @@ function carve_doors()
 
         if #doors > 0 then
             local d = get_rnd(doors)
+            add(doors, d)
             mset(d.x, d.y, 1)
             grow_flag(d.x, d.y, d.f1)
         end
@@ -250,6 +260,7 @@ function carve_cuts()
 
         if #doors > 0 then
             local d = get_rnd(doors)
+            add(doors, d)
             mset(d.x, d.y, 1)
             cut += 1
         end
@@ -272,4 +283,59 @@ function fill_ends()
             mset(c.x, c.y, 2)
         end
     until #cand == 0
+end
+
+function is_door(x, y)
+    for i = 1, 4 do
+        if in_bounds(x + dir_x[i], y + dir_y[i]) and room_map[x + dir_x[i]][y + dir_y[i]] != 0 then
+            return true
+        end
+    end
+    return false
+end
+
+function install_doors()
+    for d in all(doors) do
+        if is_walkable(d.x, d.y) and is_door(d.x, d.y) then
+            mset(d.x, d.y, 13)
+        end
+    end
+end
+
+-- decoration
+
+function start_end()
+    local high, low, player_x, player_y, exit_x, exit_y = 0, 9999
+    repeat
+        player_x, player_y = flr(rnd(16)), flr(rnd(16))
+    until is_walkable(player_x, player_y)
+
+    calc_dist(player_x, player_y)
+    for x = 0, 15 do
+        for y = 0, 15 do
+            local tmp = dist_map[x][y]
+            if is_walkable(x, y) and tmp > high then
+                player_x, player_y, high = x, y, tmp
+            end
+        end
+    end
+
+    calc_dist(player_x, player_y)
+    high = 0
+    for x = 0, 15 do
+        for y = 0, 15 do
+            local tmp = dist_map[x][y]
+            if tmp > high and can_carve(x, y, false) then
+                exit_x, exit_y, high = x, y, tmp
+            end
+            if tmp >= 0 and tmp < low and can_carve(x, y, false) then
+                player_x, player_y, low = x, y, tmp
+            end
+        end
+    end
+
+    mset(player_x, player_y, 15)
+    p_mob.x = player_x
+    p_mob.y = player_y
+    mset(exit_x, exit_y, 14)
 end

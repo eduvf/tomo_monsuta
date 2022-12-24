@@ -26,7 +26,6 @@ function move_player(dx, dy)
 			else
 				skip_ai = true
 				mset(dest_x, dest_y, 1)
-				maze_worm()
 			end
 		end
 	end
