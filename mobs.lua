@@ -110,13 +110,13 @@ function ai_attack(m)
 						best_d = d
 					end
 					if d == best_d then
-						add(cand, {x = dx, y = dy})
+						add(cand, i)
 					end
 				end
 			end
 			if #cand > 0 then
 				local c = get_rnd(cand)
-				mob_walk(m, c.x, c.y)
+				mob_walk(m, dir_x[c], dir_y[c])
 				return true
 			end
 		end

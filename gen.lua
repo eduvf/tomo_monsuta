@@ -1,3 +1,8 @@
+function gen_floor(f)
+    floor = f
+    map_gen()
+end
+
 function map_gen()
     for x = 0, 15 do
         for y = 0, 15 do
@@ -14,8 +19,8 @@ function map_gen()
     place_flags()
     carve_doors()
     carve_cuts()
-    fill_ends()
     start_end()
+    fill_ends()
     install_doors()
 end
 
@@ -45,7 +50,7 @@ end
 function rnd_room(mw, mh)
     local _w = 3 + flr(rnd(mw - 2))
     local _h = 3 + flr(rnd(mh - 2))
-    mh = max(35 / _w, 3)
+    mh = mid(35 / _w, 3, mh)
     return {
         x = 0, y = 0,
         w = _w, h = _h
@@ -268,12 +273,14 @@ function carve_cuts()
 end
 
 function fill_ends()
-    local cand
+    local cand, tile
     repeat
         cand = {}
         for _x = 0, 15 do
             for _y = 0, 15 do
-                if can_carve(_x, _y, true) then
+                tile = mget(_x, _y)
+
+                if can_carve(_x, _y, true) and tile != 14 and tile != 15 then
                     add(cand, {x = _x, y = _y})
                 end
             end
@@ -328,6 +335,14 @@ function start_end()
             if tmp > high and can_carve(x, y, false) then
                 exit_x, exit_y, high = x, y, tmp
             end
+        end
+    end
+    
+    mset(exit_x, exit_y, 14)
+
+    for x = 0, 15 do
+        for y = 0, 15 do
+            local tmp = dist_map[x][y]
             if tmp >= 0 and tmp < low and can_carve(x, y, false) then
                 player_x, player_y, low = x, y, tmp
             end
@@ -337,5 +352,4 @@ function start_end()
     mset(player_x, player_y, 15)
     p_mob.x = player_x
     p_mob.y = player_y
-    mset(exit_x, exit_y, 14)
 end

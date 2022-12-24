@@ -64,14 +64,13 @@ function update_p_turn()
 
 	if p_t == 1 then
 		_upd = update_game
-		if check_end() then
-			if skip_ai then
-				skip_ai = false
-			else
-				do_ai()
-			end
+		if trig_step() then
+			return
 		end
-		calc_dist(p_mob.x, p_mob.y)
+		if check_end() and not skip_ai then
+			do_ai()
+		end
+		skip_ai = false
 	end
 end
 

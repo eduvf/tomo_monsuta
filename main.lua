@@ -68,7 +68,8 @@ function start_game()
 
 	_upd = update_game
 	_drw = draw_game
-	unfog()
 
-	map_gen()
+	gen_floor()
+
+	unfog()
 end

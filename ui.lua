@@ -193,3 +193,7 @@ function trig_use()
 		stat_wind.dur = 0
 	end
 end
+
+function floor_msg()
+	show_msg("tomo nanpa " .. floor, 120)
+end

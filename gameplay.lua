@@ -61,6 +61,18 @@ function trig_bump(tile, dest_x, dest_y)
 	end
 end
 
+function trig_step()
+	local tile = mget(p_mob.x, p_mob.y)
+
+	if tile == 14 then
+		fade_out()
+		gen_floor(floor + 1)
+		floor_msg()
+		return true
+	end
+	return false
+end
+
 function get_mob(x, y)
 	for m in all(mob) do
 		if m.x == x and m.y == y then
@@ -193,7 +205,7 @@ function unfog_tile(x, y)
 end
 
 function calc_dist(tx, ty)
-	local cand, step = {}, 0
+	local cand, step, cand_new = {}, 0
 	dist_map = blank_map(-1)
 	add(cand, {x = tx, y = ty})
 	dist_map[tx][ty] = 0
