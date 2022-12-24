@@ -128,6 +128,35 @@ function can_see(m1, m2)
 	return dist(m1.x, m1.y, m2.x, m2.y) <= m1.los and los(m1.x, m1.y, m2.x, m2.y)
 end
 
+function spawn_mobs()
+	local min_mobs=3
+	local placed, room_pot = 0, {}
+   
+	for r in all(rooms) do
+		add(room_pot, r)
+	end
+   
+	repeat
+		local r = get_rnd(room_pot)
+		placed += infest_room(r)
+		del(room_pot, r)
+	until #room_pot == 0 or placed > min_mobs
+end
+   
+function infest_room(r)
+	local target = 2 + flr(rnd(3))
+	local x, y = 0
+   
+	for i = 1, target do
+		repeat
+			x = r.x + flr(rnd(r.w))
+			y = r.y + flr(rnd(r.y))
+	 	until is_walkable(x, y, 'checkmobs')
+		add_mob(2, x, y)
+	end
+	return target
+end
+
 ------------------------------
 
 function take_item(item)

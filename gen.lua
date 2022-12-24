@@ -1,14 +1,19 @@
 function gen_floor(f)
     floor = f
-    map_gen()
+    if floor == 0 then
+        copy_map(16, 0)
+    elseif floor == win_floor then
+        copy_map(32, 0)
+    else
+        map_gen()
+    end
 end
 
 function map_gen()
-    for x = 0, 15 do
-        for y = 0, 15 do
-            mset(x, y, 2)
-        end
-    end
+    copy_map(48, 0)
+
+    mob = {}
+    add(mob, p_mob)
 
     rooms = {}
     room_map = blank_map(0)
@@ -22,6 +27,8 @@ function map_gen()
     start_end()
     fill_ends()
     install_doors()
+
+    spawn_mobs()
 end
 
 function gen_rooms()
@@ -335,27 +342,27 @@ end
 -- decoration
 
 function start_end()
-    local high, low, player_x, player_y, exit_x, exit_y = 0, 9999
+    local high, low, px, py, exit_x, exit_y = 0, 9999
     repeat
-        player_x, player_y = flr(rnd(16)), flr(rnd(16))
-    until is_walkable(player_x, player_y)
+        px, py = flr(rnd(16)), flr(rnd(16))
+    until is_walkable(px, py)
 
-    calc_dist(player_x, player_y)
+    calc_dist(px, py)
     for x = 0, 15 do
         for y = 0, 15 do
             local tmp = dist_map[x][y]
             if is_walkable(x, y) and tmp > high then
-                player_x, player_y, high = x, y, tmp
+                px, py, high = x, y, tmp
             end
         end
     end
 
-    calc_dist(player_x, player_y)
+    calc_dist(px, py)
     high = 0
     for x = 0, 15 do
         for y = 0, 15 do
             local tmp = dist_map[x][y]
-            if tmp > high and can_carve(x, y, false) or can_carve(x, y, true) then
+            if tmp > high and (can_carve(x, y, false) or can_carve(x, y, true)) then
                 exit_x, exit_y, high = x, y, tmp
             end
         end
@@ -366,13 +373,13 @@ function start_end()
     for x = 0, 15 do
         for y = 0, 15 do
             local tmp = dist_map[x][y]
-            if tmp >= 0 and tmp < low and can_carve(x, y, false) or can_carve(x, y, true) then
-                player_x, player_y, low = x, y, tmp
+            if tmp >= 0 and tmp < low and (can_carve(x, y, false) or can_carve(x, y, true)) then
+                px, py, low = x, y, tmp
             end
         end
     end
 
-    mset(player_x, player_y, 15)
-    p_mob.x = player_x
-    p_mob.y = player_y
+    mset(px, py, 15)
+    p_mob.x = px
+    p_mob.y = py
 end

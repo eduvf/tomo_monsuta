@@ -78,3 +78,16 @@ end
 function get_rnd(arr)
 	return arr[1 + flr(rnd(#arr))]
 end
+
+function copy_map(x, y)
+	local tile
+	for _x = 0, 15 do
+		for _y = 0, 15 do
+			tile = mget(_x + x, _y + y)
+			mset(_x, _y, tile)
+			if tile == 15 then
+				p_mob.x, p_mob.y = _x, _y
+			end
+		end
+	end
+end

@@ -62,5 +62,10 @@ end
 
 function draw_gameover()
 	cls(2)
-	print('u ded', 50, 50)
+	print('sina moli!', 50, 50, 7)
+end
+
+function draw_gamewin()
+	cls(2)
+	print('sina kama jo!', 50, 50, 7)
 end

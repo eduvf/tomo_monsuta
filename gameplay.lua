@@ -56,8 +56,11 @@ function trig_bump(tile, dest_x, dest_y)
 		mset(dest_x, dest_y, 1)
 	elseif tile == 6 then
 		-- stone tablet
-		-- show_msg('toki! o pona!', 60)
-		show_talk({'o toki!','','o sewi e tomo','monsuta. o kama','jo e poki pi','kiwen jelo.'})
+		if floor == 0 then
+			show_talk({'o toki!','','o sewi e tomo','monsuta. o kama','jo e poki pi','kiwen jelo!'})
+		elseif floor == win_floor then
+			win = true
+		end
 	end
 end
 
@@ -131,7 +134,15 @@ function heal_mob(m, hp)
 end
 
 function check_end()
-	if p_mob.hp <= 0 then
+	if win then
+		windows = {}
+		_upd = update_gameover
+		_drw = draw_gamewin
+		fade_out()
+		-- reload the map
+		reload(0x2000, 0x2000, 0x1000)
+		return false
+	elseif p_mob.hp <= 0 then
 		windows = {}
 		_upd = update_gameover
 		_drw = draw_gameover

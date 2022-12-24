@@ -49,6 +49,9 @@ function start_game()
 
 	skip_ai = false
 
+	win = false
+	win_floor = 9
+
 	mob = {}
 	die_mob = {}
 	p_mob = add_mob(1, 1, 1)
