@@ -1,7 +1,7 @@
 function _init()
 	t = 0
 
-	dpal = {0,1,1,2,1,13,6,4,4,9,3,13,1,13,14}
+	dpal = {0, 1, 1, 2, 1, 13, 6, 4, 4, 9, 3, 13, 1, 13, 14}
 
 	dir_x = {-1, 1, 0, 0, 1, 1,-1,-1}
 	dir_y = { 0, 0,-1, 1,-1, 1, 1,-1}
@@ -34,7 +34,9 @@ end
 function _draw()
 	_drw()
 	draw_windows()
-	check_fade()
+	
+	fadeperc = 0
+	-- check_fade()
 
 	cursor(4, 4)
 	color(8)

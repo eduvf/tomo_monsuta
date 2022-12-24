@@ -86,7 +86,8 @@ function get_mob(x, y)
 end
 
 function is_walkable(x, y, mode)
-	mode = mode or ''
+	local mode = mode or 'test'
+
 	if in_bounds(x, y) then
 		local tile = mget(x, y)
 		if mode == 'sight' then
@@ -139,16 +140,12 @@ function check_end()
 		_upd = update_gameover
 		_drw = draw_gamewin
 		fade_out()
-		-- reload the map
-		reload(0x2000, 0x2000, 0x1000)
 		return false
 	elseif p_mob.hp <= 0 then
 		windows = {}
 		_upd = update_gameover
 		_drw = draw_gameover
 		fade_out()
-		-- reload the map
-		reload(0x2000, 0x2000, 0x1000)
 		return false
 	end
 	return true
@@ -223,7 +220,7 @@ function calc_dist(tx, ty)
 
 	repeat
 		step += 1
-		new_cand = {}
+		cand_new = {}
 		for c in all(cand) do
 			for d = 1, 4 do
 				local dx = c.x + dir_x[d]
@@ -231,12 +228,12 @@ function calc_dist(tx, ty)
 				if in_bounds(dx, dy) and dist_map[dx][dy] == -1 then
 					dist_map[dx][dy] = step
 					if is_walkable(dx, dy) then
-						add(new_cand, {x = dx, y = dy})
+						add(cand_new, {x = dx, y = dy})
 					end
 				end
 			end
 		end
-		cand = new_cand
+		cand = cand_new
 	until #cand == 0
 end
 

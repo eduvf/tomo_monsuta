@@ -9,40 +9,40 @@ function add_wind(x, y, w, h, text)
 end
 
 function draw_windows()
-	for win in all(windows) do
-		local x, y, w, h = win.x, win.y, win.w, win.h
+	for wind in all(windows) do
+		local x, y, w, h = wind.x, wind.y, wind.w, wind.h
 		rectf(x, y, w, h, 1)
 		rect(x + 1, y + 1, x + w -2, y + h -2, 6)
 		x += 4
 		y += 4
 		clip(x, y, w - 7, h - 7)
-		if win.cursor then
+		if wind.cursor then
 			x += 6
 		end
-		for i = 1, #win.text do
-			local t, c = win.text[i], 6
-			if win.color and win.color[i] then
-				c = win.color[i]
+		for i = 1, #wind.text do
+			local t, c = wind.text[i], 6
+			if wind.color and wind.color[i] then
+				c = wind.color[i]
 			end
 			print(t, x, y, c)
-			if i == win.cursor then
+			if i == wind.cursor then
 				spr(255, x - 5 + sin(time()), y)
 			end
 			y += 6
 		end
 		clip()
 
-		if win.dur then
-			win.dur -= 1
-			if win.dur <= 0 then
-				win.y += h / 4
-				win.h -= h / 2
-				if win.h < 3 then
-					del(windows, win)
+		if wind.dur then
+			wind.dur -= 1
+			if wind.dur <= 0 then
+				wind.y += h / 4
+				wind.h -= h / 2
+				if wind.h < 3 then
+					del(windows, wind)
 				end
 			end
 		else
-			if win.btn then
+			if wind.btn then
 				oprint8(
 					'❎',
 					x + w - 15,
@@ -56,8 +56,8 @@ end
 
 function show_msg(text, dur)
 	local w = (#text + 2) * 4 + 6
-	local win = add_wind(63 - w / 2, 50, w, 13, {' '..text})
-	win.dur = dur
+	local wind = add_wind(63 - w / 2, 50, w, 13, {' '..text})
+	wind.dur = dur
 end
 
 function show_talk(text)
@@ -83,7 +83,7 @@ function do_floats()
 end
 
 function do_hp_wind()
-	hp_wind.text[1] = p_mob.hp .. '♥'
+	hp_wind.text[1] = p_mob.hp .. '/' .. p_mob.hp_max .. '♥'
 	local hp_y = 5
 	if p_mob.y < 8 then
 		hp_y = 110

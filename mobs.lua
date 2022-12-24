@@ -145,12 +145,12 @@ end
    
 function infest_room(r)
 	local target = 2 + flr(rnd(3))
-	local x, y = 0
+	local x, y
    
 	for i = 1, target do
 		repeat
 			x = r.x + flr(rnd(r.w))
-			y = r.y + flr(rnd(r.y))
+			y = r.y + flr(rnd(r.h))
 	 	until is_walkable(x, y, 'checkmobs')
 		add_mob(2, x, y)
 	end

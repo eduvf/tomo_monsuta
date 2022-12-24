@@ -1,5 +1,5 @@
 function get_frame(anim)
-	return anim[flr(t/8) % #anim + 1]
+	return anim[flr(t / 8) % #anim + 1]
 end
 
 function draw_spr(id, x, y, c, fx)

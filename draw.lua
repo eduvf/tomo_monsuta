@@ -1,8 +1,9 @@
 function draw_game()
 	cls(0)
+	if fadeperc == 1 then return end
 	map()
 	for m in all(die_mob) do
-		if sin(time()*8) > 0 then
+		if sin(time() * 8) > 0 then
 			draw_mob(m)
 		end
 		m.dur -= 1
@@ -17,7 +18,6 @@ function draw_game()
 	end
 
 	if _upd == update_throw then
-		-- line(p_mob.x * 8 + 4, p_mob.y * 8 + 4, p_mob.x * 8 + throw_x * 16 + 4, p_mob.y * 8 + throw_y * 16 + 4, 7)
 		local tx, ty = throw_tile()
 		local lx1, ly1 = p_mob.x * 8 + 3 + throw_x * 4, p_mob.y * 8 + 3 + throw_y * 4
 		local lx2, ly2 = mid(0, tx * 8 + 3, 127), mid(0, ty * 8 + 3, 127)
