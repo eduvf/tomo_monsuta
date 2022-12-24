@@ -204,9 +204,9 @@ function grow_flag(_x, _y, f)
 end
 
 function carve_doors()
-    local x1, y1, x2, y2, found, _f1, _f2, doors = 1, 1, 1, 1
+    local x1, y1, x2, y2, found, _f1, _f2, door_prev = 1, 1, 1, 1
     repeat
-        doors = {}
+        door_prev = {}
         for _x = 0, 15 do
             for _y = 0, 15 do
                 if not is_walkable(_x, _y) then
@@ -222,25 +222,25 @@ function carve_doors()
                     _f1 = flags[x1][y1]
                     _f2 = flags[x2][y2]
                     if found and _f1 != _f2 then
-                        add(doors, {x = _x, y = _y, f1 = _f1, f2 = _f2})
+                        add(door_prev, {x = _x, y = _y, f1 = _f1, f2 = _f2})
                     end
                 end
             end
         end
 
-        if #doors > 0 then
-            local d = get_rnd(doors)
+        if #door_prev > 0 then
+            local d = get_rnd(door_prev)
             add(doors, d)
             mset(d.x, d.y, 1)
             grow_flag(d.x, d.y, d.f1)
         end
-    until #doors == 0
+    until #door_prev == 0
 end
 
 function carve_cuts()
-    local x1, y1, x2, y2, cut, found, doors = 1, 1, 1, 1, 0
+    local x1, y1, x2, y2, cut, found, door_prev = 1, 1, 1, 1, 0
     repeat
-        doors = {}
+        door_prev = {}
         for _x = 0, 15 do
             for _y = 0, 15 do
                 if not is_walkable(_x, _y) then
@@ -256,20 +256,20 @@ function carve_cuts()
                     if found then
                         calc_dist(x1, y1)
                         if dist_map[x2][y2] > 20 then
-                            add(doors, {x = _x, y = _y})
+                            add(door_prev, {x = _x, y = _y})
                         end
                     end
                 end
             end
         end
 
-        if #doors > 0 then
-            local d = get_rnd(doors)
+        if #door_prev > 0 then
+            local d = get_rnd(door_prev)
             add(doors, d)
             mset(d.x, d.y, 1)
             cut += 1
         end
-    until #doors == 0 or cut >= 3
+    until #door_prev == 0 or cut >= 3
 end
 
 function fill_ends()
