@@ -69,7 +69,7 @@ function start_game()
 	_upd = update_game
 	_drw = draw_game
 
-	gen_floor()
+	gen_floor(0)
 
 	unfog()
 end
