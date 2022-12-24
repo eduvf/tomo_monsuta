@@ -110,6 +110,21 @@ function maze_worm()
             dig_worm(c.x, c.y)
         end
     until #cand <= 1
+
+    repeat
+        local cand = {}
+        for _x = 0, 15 do
+            for _y = 0, 15 do
+                if can_carve(_x, _y, false) and not next_to_room(_x, _y) then
+                    add(cand, {x = _x, y = _y})
+                end
+            end
+        end
+        if #cand > 0 then
+            local c = get_rnd(cand)
+            mset(c.x, c.y, 1)
+        end
+    until #cand <= 1
 end
 
 function dig_worm(x, y)
@@ -293,6 +308,14 @@ function fill_ends()
 end
 
 function is_door(x, y)
+    local sig = get_signature(x, y)
+    if bit_comp(sig, 0b11000000, 0b00001111) or bit_comp(sig, 0b00110000, 0b00001111) then
+        return next_to_room(x, y)
+    end
+    return false
+end
+
+function next_to_room(x, y)
     for i = 1, 4 do
         if in_bounds(x + dir_x[i], y + dir_y[i]) and room_map[x + dir_x[i]][y + dir_y[i]] != 0 then
             return true
@@ -303,7 +326,7 @@ end
 
 function install_doors()
     for d in all(doors) do
-        if is_walkable(d.x, d.y) and is_door(d.x, d.y) then
+        if mget(d.x, d.y) == 1 and is_door(d.x, d.y) then
             mset(d.x, d.y, 13)
         end
     end
@@ -332,7 +355,7 @@ function start_end()
     for x = 0, 15 do
         for y = 0, 15 do
             local tmp = dist_map[x][y]
-            if tmp > high and can_carve(x, y, false) then
+            if tmp > high and can_carve(x, y, false) or can_carve(x, y, true) then
                 exit_x, exit_y, high = x, y, tmp
             end
         end
@@ -343,7 +366,7 @@ function start_end()
     for x = 0, 15 do
         for y = 0, 15 do
             local tmp = dist_map[x][y]
-            if tmp >= 0 and tmp < low and can_carve(x, y, false) then
+            if tmp >= 0 and tmp < low and can_carve(x, y, false) or can_carve(x, y, true) then
                 player_x, player_y, low = x, y, tmp
             end
         end
