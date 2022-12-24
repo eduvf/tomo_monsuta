@@ -8,6 +8,8 @@ function map_gen()
     maze_worm()
     place_flags()
     carve_doors()
+    carve_cuts()
+    fill_ends()
 end
 
 function gen_rooms()
@@ -101,11 +103,11 @@ function dig_worm(x, y)
 
     repeat
         mset(x, y, 1)
-        if not can_carve(x + dir_x[dir], y + dir_y[dir]) or (rnd() < 0.5 and step > 2) then
+        if not can_carve(x + dir_x[dir], y + dir_y[dir], false) or (rnd() < 0.5 and step > 2) then
             step = 0
             local cand = {}
             for i = 1, 4 do
-                if can_carve(x + dir_x[i], y + dir_y[i]) then
+                if can_carve(x + dir_x[i], y + dir_y[i], false) then
                     add(cand, i)
                 end
             end
@@ -121,8 +123,8 @@ function dig_worm(x, y)
     until dir == 8
 end
 
-function can_carve(x, y)
-    if in_bounds(x, y) and not is_walkable(x, y) then
+function can_carve(x, y, walk)
+    if in_bounds(x, y) and is_walkable(x, y) == walk then
         local sig = get_signature(x, y)
         for i = 1, #carve_sig do
             if bit_comp(sig, carve_sig[i], carve_msk[i]) then
@@ -170,14 +172,15 @@ end
 
 function grow_flag(_x, _y, f)
     local cand, cand_new = {{x = _x, y = _y}}
+    flags[_x][_y] = f
 
     repeat
         cand_new = {}
         for c in all(cand) do
-            flags[c.x][c.y] = f
             for d = 1, 4 do
                 local dx, dy = c.x + dir_x[d], c.y + dir_y[d]
                 if is_walkable(dx, dy) and flags[dx][dy] != f then
+                    flags[dx][dy] = f
                     add(cand_new, {x = dx, y = dy})
                 end
             end
@@ -187,9 +190,9 @@ function grow_flag(_x, _y, f)
 end
 
 function carve_doors()
-    local x1, y1, x2, y2, found, _f1, _f2 = 1, 1, 1, 1
+    local x1, y1, x2, y2, found, _f1, _f2, doors = 1, 1, 1, 1
     repeat
-        local doors = {}
+        doors = {}
         for _x = 0, 15 do
             for _y = 0, 15 do
                 if not is_walkable(_x, _y) then
@@ -217,4 +220,56 @@ function carve_doors()
             grow_flag(d.x, d.y, d.f1)
         end
     until #doors == 0
+end
+
+function carve_cuts()
+    local x1, y1, x2, y2, cut, found, doors = 1, 1, 1, 1, 0
+    repeat
+        doors = {}
+        for _x = 0, 15 do
+            for _y = 0, 15 do
+                if not is_walkable(_x, _y) then
+                    local sig = get_signature(_x, _y)
+                    found = false
+
+                    if bit_comp(sig, 0b11000000, 0b00001111) then
+                        x1, y1, x2, y2, found = _x, _y - 1, _x, _y + 1, true
+                    elseif bit_comp(sig, 0b00110000, 0b00001111) then
+                        x1, y1, x2, y2, found = _x + 1, _y, _x - 1, _y, true
+                    end
+
+                    if found then
+                        calc_dist(x1, y1)
+                        if dist_map[x2][y2] > 20 then
+                            add(doors, {x = _x, y = _y})
+                        end
+                    end
+                end
+            end
+        end
+
+        if #doors > 0 then
+            local d = get_rnd(doors)
+            mset(d.x, d.y, 1)
+            cut += 1
+        end
+    until #doors == 0 or cut >= 3
+end
+
+function fill_ends()
+    local cand
+    repeat
+        cand = {}
+        for _x = 0, 15 do
+            for _y = 0, 15 do
+                if can_carve(_x, _y, true) then
+                    add(cand, {x = _x, y = _y})
+                end
+            end
+        end
+
+        for c in all(cand) do
+            mset(c.x, c.y, 2)
+        end
+    until #cand == 0
 end
